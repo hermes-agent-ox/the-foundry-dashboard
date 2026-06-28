@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Foundry — Pipeline Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--orange:#d29922;--red:#f85149;--pink:#f778ba;--purple:#bc8cff;--cyan:#39d2c0;--font:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif;--radius:6px;--shadow:0 1px 3px rgba(0,0,0,0.3)}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;min-height:100vh;padding:20px}
+.container{max-width:1280px;margin:0 auto}
+.header{padding:16px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.header h1{font-size:22px;font-weight:600;color:var(--text);letter-spacing:-0.3px}
+.header h1 span{color:var(--accent)}
+.header .sub{color:var(--text2);font-size:13px;margin-top:4px}
+.summary-bar{display:flex;flex-wrap:wrap;gap:6px 12px;margin:12px 0;font-size:12px;color:var(--text2)}
+.summary-bar .sum-item{display:inline-flex;align-items:center;gap:4px}
+.summary-bar .sum-item .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.pipeline-flow{display:flex;align-items:center;gap:0;overflow-x:auto;padding:8px 0 16px;margin-bottom:8px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.pipeline-flow::-webkit-scrollbar{height:4px}
+.pipeline-flow::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.stage-card{flex-shrink:0;min-width:120px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s;position:relative;user-select:none}
+.stage-card:hover{background:var(--bg3);border-color:var(--accent);transform:translateY(-1px)}
+.stage-card .stage-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text2);margin-bottom:2px}
+.stage-card .stage-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.stage-card .stage-count{font-size:20px;font-weight:700;color:var(--accent)}
+.stage-card .stage-count.empty{color:var(--text2)}
+.stage-card.bottleneck{border-color:var(--orange)}
+.stage-card.bottleneck .stage-count{color:var(--orange)}
+.stage-card.bottleneck::after{content:'BOTTLENECK';position:absolute;top:-6px;right:-6px;font-size:8px;font-weight:700;background:var(--orange);color:var(--bg);padding:1px 5px;border-radius:3px;letter-spacing:0.5px}
+.pipeline-arrow{flex-shrink:0;color:var(--text2);font-size:16px;padding:0 4px;opacity:0.5}
+.detail-panels{margin-top:8px}
+.detail-panel{margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.detail-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);cursor:pointer;transition:background 0.15s;user-select:none}
+.detail-panel-header:hover{background:var(--bg3)}
+.detail-panel-header .dp-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text2)}
+.detail-panel-header .dp-title{font-size:14px;font-weight:500;color:var(--text)}
+.detail-panel-header .dp-count{font-size:13px;color:var(--accent);font-weight:500}
+.detail-panel-header .dp-toggle{color:var(--text2);font-size:18px;transition:transform 0.2s}
+.detail-panel-header .dp-toggle.open{transform:rotate(180deg)}
+.detail-panel-body{padding:0;display:none}
+.detail-panel-body.open{display:block}
+.detail-panel-body .empty-state{padding:24px 14px;text-align:center;color:var(--text2);font-size:13px}
+.file-list{display:flex;flex-direction:column}
+.file-card{border-bottom:1px solid var(--border);padding:0}
+.file-card:last-child{border-bottom:none}
+.file-card-summary{padding:10px 14px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:background 0.1s}
+.file-card-summary:hover{background:var(--bg3)}
+.file-card-summary .fc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.file-card-summary .fc-filename{font-size:13px;font-weight:500;color:var(--text);word-break:break-all}
+.file-card-summary .fc-date{font-size:11px;color:var(--text2);white-space:nowrap}
+.file-card-summary .fc-tags{display:flex;flex-wrap:wrap;gap:3px}
+.file-card-summary .fc-tag{font-size:10px;padding:1px 6px;border-radius:3px;background:var(--accent2);color:var(--text);font-weight:500}
+.file-card-summary .fc-tag.tag-ai-deployment{background:#1a3a5c;color:#79c0ff}
+.file-card-summary .fc-tag.tag-applied-ai{background:#1a3a5c;color:#79c0ff}
+.file-card-summary .fc-tag.tag-idea{background:#2d1b4e;color:#d2a8ff}
+.file-card-summary .fc-tag.tag-capture{background:#1a3a2a;color:#7ee787}
+.file-card-summary .fc-tag.tag-governance{background:#3d1a1a;color:#ff7b72}
+.file-card-summary .fc-tag.tag-infrastructure{background:#1a2d3d;color:#79c0ff}
+.file-card-summary .fc-tag.tag-market-shift{background:#3d2d1a;color:#d29922}
+.file-card-summary .fc-tag.tag-regulation{background:#2d1a3d;color:#bc8cff}
+.file-card-summary .fc-tag.tag-framework{background:#1a3d2d;color:#7ee787}
+.file-card-summary .fc-tag.tag-hot-take{background:#3d1a2d;color:#f778ba}
+.file-card-summary .fc-tag.tag-insight{background:#1a2d3d;color:#79c0ff}
+.file-card-summary .fc-tag.tag-observation{background:#2d2d1a;color:#d29922}
+.file-card-summary .fc-tag.tag-case-study{background:#1a3d3d;color:#56d4dd}
+.file-card-summary .fc-tag.tag-contrarian{background:#3d1a2d;color:#f778ba}
+.file-card-summary .fc-angle{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
+.file-card-summary .fc-rating{font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--accent);font-weight:600}
+.file-card-body{display:none;padding:10px 14px 14px;background:var(--bg3);border-top:1px solid var(--border)}
+.file-card-body.open{display:block}
+.file-card-body .fcb-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);margin-bottom:4px}
+.file-card-body .fcb-source{font-size:12px;color:var(--accent);margin-bottom:10px;word-break:break-all}
+.file-card-body .fcb-source a{color:var(--accent);text-decoration:none}
+.file-card-body .fcb-source a:hover{text-decoration:underline}
+.file-card-body .fcb-angle-full{font-size:12px;color:var(--text);margin-bottom:10px;line-height:1.5}
+.file-card-body .fcb-body-preview{font-size:12px;color:var(--text2);line-height:1.5;white-space:pre-wrap;max-height:200px;overflow-y:auto;padding:8px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border)}
+.templates-section{margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.templates-section h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text2);margin-bottom:10px}
+.templates-list{display:flex;flex-wrap:wrap;gap:6px}
+.template-link{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);color:var(--accent);text-decoration:none;font-size:12px;transition:all 0.15s}
+.template-link:hover{background:var(--bg3);border-color:var(--accent)}
+.template-link .tl-abbr{font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--text2)}
+.footer{margin-top:32px;padding-top:12px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text2)}
+@media(max-width:640px){body{padding:12px}
+.pipeline-flow{gap:0;padding:4px 0 12px}
+.stage-card{min-width:100px;padding:8px 10px}
+.stage-card .stage-count{font-size:16px}
+.pipeline-arrow{font-size:12px;padding:0 2px}
+.detail-panel-header{padding:8px 10px}
+.file-card-summary{padding:8px 10px}
+.file-card-body{padding:8px 10px}
+.header h1{font-size:18px}
+.summary-bar{gap:4px 8px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+
+<script>
+const DATA = {"stages":[{"id":"capture","name":"CAPTURE","dir":"Inbox","path":"Inbox/","count":15,"empty":false,"files":[{"filename":"2026-06-27_0602-anthropic-alibaba-distillation-attack.md","date":"2026-06-27","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"Alibaba stole from Claude 28.8 million times. Your AI product's IP moat doesn't come from the model — it comes from what the model can't replicate.","rating":null,"source":"https://unrot.co/blogs/today-top-10-ai-news-june-26-2026","body_preview":"# Anthropic Accuses Alibaba of the Largest Known AI Distillation Attack — 28.8M Exchanges\n\n## What Happened\n\nAnthropic sent a letter to the Senate Banking Committee (June 10, made public June 25) formally accusing Alibaba of running 28.8 million fraudulent queries against Claude between April 22 and June 5, 2026 — the largest known distillation attack in history."},{"filename":"2026-06-27_0600-openai-jalapeno-inference-chip.md","date":"2026-06-27","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"OpenAI built its own chip in 9 months using its own models. The models race is over — the infrastructure race is where product leadership is won.","rating":null,"source":"https://unrot.co/blogs/today-top-10-ai-news-june-26-2026","body_preview":"# OpenAI Jalapeño Chip — First Custom Inference Silicon\n\n## What Happened\n\nOpenAI unveiled \"Jalapeño,\" its first custom AI inference chip, on June 25 — developed in partnership with Broadcom (silicon & networking), TSMC (manufacturing), and Celestica (integration). Designed in just 9 months from concept to tape-out — the fastest ever for an advanced chip — with OpenAI's own models accelerating the design process."},{"filename":"2026-06-27_0601-ai-pricing-era-ends.md","date":"2026-06-27","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"The era of cheap AI is over. GPT-5.5 doubled pricing, Gemini 3.5 Flash tripled it, Fable 5 doubled Opus. Every product leader needs to rewrite their unit economics.","rating":null,"source":"https://www.buildfastwithai.com/blogs/ai-news-today-june-26-2026","body_preview":"# The Era of Cheap AI Ends in 2026 — Across-the-Board Model Price Hikes\n\n## What Happened\n\nAfter 3+ years of steadily declining AI model prices (sometimes 10x drops in a single year), the trend has reversed. Every major model provider raised prices in Q2 2026:"},{"filename":"2026-06-20_0700-applied-ai-brief-agent-governance-gap.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai","governance"],"suggested_angle":"Your enterprise will have 1,600 AI agents by December. You can govern exactly zero of them. The governance gap is the defining enterprise AI problem of late 2026.","rating":null,"source":"https://beam.ai/agentic-insights/ibm-says-enterprises-will-run-1600-ai-agents-by-year-end-70-cant-govern-the-ones-they-have","body_preview":"# The 1,600-Agent Enterprise: AI Agent Governance Gap Hits Critical Mass\n\n## What Happened\n\nTwo major data releases this month paint the same picture: enterprises are deploying AI agents faster than they can govern them."},{"filename":"2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai","infrastructure"],"suggested_angle":"AWS just became the operating system for enterprise AI agents. What AWS Context, DevOps Agent, and Continuum tell us about where agentic AI is heading.","rating":null,"source":"https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026","body_preview":"# AWS Summit New York 2026: The Agent Infrastructure Layer Arrives\n\n## What Happened\n\nAWS Summit New York (June 17, Javits Center) was the company's most agentic AI-focused event ever. VP of Agentic AI Swami Sivasubramanian keynote set the tone: \"AI is starting to do the work, not just augmenting it.\""},{"filename":"2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"Microsoft just shipped the 'AI does the work' future to every enterprise. Here's what it means for product leaders building agentic experiences.","rating":null,"source":"https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available","body_preview":"## Microsoft Copilot Cowork Goes GA — Agentic AI Hits the Enterprise Mainstream\n\n**What happened:** On June 16, Microsoft flipped the switch on Copilot Cowork, moving it from a three-month Frontier preview to worldwide general availability."},{"filename":"2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"73% of enterprises use AI. Only 10% say it's core to their business. The real bottleneck isn't the technology — it's organizational design.","rating":null,"source":"https://www.marketscale.com/industries/software-and-technology/publicis-sapients-2026-enterprise-ai-report-finds-wide-adoption-but-only-10-say-its-core-to-operations","body_preview":"## Publicis Sapient Report: The AI Adoption Mirage — 73% Using, 10% Transformed\n\n**What happened:** Publicis Sapient released its 2026 Enterprise AI Readiness report at VivaTech Paris (June 17), surveying 1,550 AI decision-makers across six markets."},{"filename":"2026-06-23_1520-change-management-digital-adoption-fear.md","date":"2026-06-23","tags":["idea","capture"],"suggested_angle":"Most innovation content preaches to the converted. The real product challenge is change management — helping people intimidated by digital adoption actually want to adopt it.","rating":null,"source":"conversation (Paul I)","body_preview":"# Change Management & Digital Adoption Fear\n\nThe challenge: most content about innovation assumes the audience is already bought in. The bigger, harder problem is the people who are **intimidated, skeptical, or burned out** by the pace of digital change."},{"filename":"2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md","date":"2026-06-23","tags":["idea","ai-deployment","applied-ai","market-shift"],"suggested_angle":"ChatGPT fell below 50% market share. The AI assistant is becoming a commodity. The value is moving upstream.","rating":null,"source":"https://unrot.co/blogs/ai-news-today-june-21-2026","body_preview":"# ChatGPT Drops Below 50% Market Share — GPT-5.6 Imminent\n\n## What Happened\n\nSensor Tower's 2026 State of AI Report shows ChatGPT at 46.4% market share (1.1B monthly users) — the first time it's fallen below 50%."},{"filename":"2026-06-23_0700-applied-ai-brief-openai-deployment-company.md","date":"2026-06-23","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"OpenAI just spent $4B on deployment, not models. The signal for every product leader building with AI.","rating":null,"source":"https://openai.com/index/openai-launches-the-deployment-company","body_preview":"# OpenAI Deployment Company — $4B+ to Solve the Deployment Gap\n\n## What Happened\n\nOpenAI launched a standalone business unit called the OpenAI Deployment Company, capitalised with over $4B from 19 investment firms (TPG lead, Bain Capital, Brookfield, Goldman Sachs, SoftBank) and partnerships with Bain & Company, Capgemini, and McKinsey."},{"filename":"2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai","framework"],"suggested_angle":"80% of enterprise apps embed AI agents. 31% have one in production. The 49-point gap is where product leaders either win or get written off.","rating":null,"source":"https://www.digitalapplied.com/blog/ai-agent-adoption-2026-enterprise-data-points","body_preview":"# The 49-Point Gap: AI Agent Adoption Data That Changes How You Build\n\n## What Happened\n\nNew aggregate data from Gartner, S&P Global, and Forrester paints a stark picture of enterprise AI agent adoption as of Q1 2026:"},{"filename":"2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md","date":"2026-06-20","tags":["idea","ai-deployment","regulation"],"suggested_angle":"Your AI supply chain just became a geopolitical risk. What Claude Fable 5's shutdown-and-restoration saga means for every product leader.","rating":null,"source":"https://aiinsiders.net/article/amazon-research-triggered-a-federal-shutdown-of-anthropics","body_preview":"# Claude Fable 5: Shutdown, Restoration, and the Amazon Conflict of Interest\n\n## What Happened\n\nAnthropic restored Claude Fable 5 on Thursday, June 18 — ending a six-day government-forced shutdown that began June 12."},{"filename":"2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"Agentic AI isn't coming to travel and loyalty — it just arrived. Sabre's MCP deployment is a case study in production-grade AI.","rating":null,"source":"https://www.prnewswire.com/news-releases/sabre-scales-agentic-ai-deployment-as-ultra-group-expands-globally-under-linex-302803108.html","body_preview":"# Sabre Scales Agentic AI Deployment in Travel Loyalty\n\n## What Happened\n\nSabre Corporation announced a landmark production deployment of agentic AI with Ultra Group (now Linex Travel, part of Linex Loyalty)."},{"filename":"2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"88% of enterprise leaders wish they'd fixed their data architecture before deploying AI. The lesson for every product leader.","rating":null,"source":"https://agilebrandguide.com/marketing-technology-ai-news-june-10-2026","body_preview":"# Contentstack Launches AXP — 88% of Leaders Say They Should've Fixed Data First\n\n## What Happened\n\nContentstack launched its Agentic Experience Platform (AXP) — combining Content Cloud (brand governance), Data Cloud (real-time customer data via Lytics CDP), and Agent OS (autonomous agent orchestration)."},{"filename":"2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md","date":"2026-06-20","tags":["idea","ai-deployment","applied-ai"],"suggested_angle":"The real AI moat isn't the model — it's what you know. Morgan Stanley just proved it.","rating":null,"source":"https://aiinsiders.net/article/morgan-stanley-opens-wealth-platforms-to-ai-agents-via-mcp","body_preview":"# Morgan Stanley Opens Wealth Platforms to AI Agents via MCP\n\n## What Happened\n\nMorgan Stanley announced it will let AI agents from corporate clients query its equity compensation platforms — ShareWorks and Equity Edge — directly through MCP (Model Context Protocol)."}]},{"id":"incubate","name":"INCUBATE","dir":"Incubating","path":"Incubating/","count":0,"empty":true,"bottleneck":true,"files":[]},{"id":"challenge","name":"CHALLENGE","dir":"Challenged","path":"Challenged/","count":0,"empty":true,"bottleneck":true,"files":[]},{"id":"organize","name":"ORGANIZE","dir":"Queue","path":"Queue/","count":1,"empty":false,"bottleneck":false,"files":[{"filename":"2026-W26-queue-plan.md","date":"2026-06-21","tags":[],"suggested_angle":"Weekly queue plan — no challenged items available for scheduling. Filling the top of the funnel.","rating":null,"source":null,"body_preview":"# Weekly Queue Plan — Week of June 21, 2026\n\n**Status:** Pipeline priming — no challenged items available for scheduling\n**Created:** June 21, 2026 (Sunday 5:30 PM EST)\n\n---\n\n## Situation\n\nThe Foundry pipeline is empty of ready-to-draft content. Zero items have passed the Challenge stage."}]},{"id":"draft","name":"DRAFT","dir":"Drafts","path":"Drafts/","count":0,"empty":true,"bottleneck":true,"files":[]},{"id":"polish","name":"POLISH","dir":"Polished","path":"Polished/","count":0,"empty":true,"bottleneck":true,"files":[]},{"id":"distribute","name":"DISTRIBUTE","dir":"Archive","path":"Archive/","count":0,"empty":true,"files":[]}],"templates":[{"name":"LF Template","path":"Drafts/LF/_TEMPLATE_LF.md"},{"name":"SF Template","path":"Drafts/SF/_TEMPLATE_SF.md"},{"name":"Thread Template","path":"Drafts/Thread/_TEMPLATE_Thread.md"},{"name":"Bridge Template","path":"Drafts/Bridge/_TEMPLATE_Bridge.md"},{"name":"Visual Template","path":"Drafts/Visual/_TEMPLATE_Visual.md"},{"name":"Challenge Template","path":"Challenged/_TEMPLATE_Challenge.md"}],"totalItems":16,"summary":[{"label":"CAPTURE","count":15,"color":"#58a6ff"},{"label":"INCUBATE","count":0,"color":"#d29922"},{"label":"CHALLENGE","count":0,"color":"#d29922"},{"label":"ORGANIZE","count":1,"color":"#3fb950"},{"label":"DRAFT","count":0,"color":"#d29922"},{"label":"POLISH","count":0,"color":"#d29922"},{"label":"DISTRIBUTE","count":0,"color":"#8b949e"}]};
+
+function tagClass(tag) {
+  return 'tag-' + tag.replace(/-/g, '-');
+}
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  // Header
+  html += '<div class="header">';
+  html += '<h1>The Foundry <span>Pipeline Dashboard</span></h1>';
+  html += '<div class="sub">' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) + ' — ' + DATA.totalItems + ' total items across pipeline</div>';
+
+  // Pipeline Summary
+  html += '<div class="summary-bar">';
+  DATA.summary.forEach(function(s) {
+    html += '<span class="sum-item"><span class="dot" style="background:' + s.color + '"></span>' + s.label + ': ' + s.count + '</span>';
+  });
+  html += '</div></div>';
+
+  // Pipeline Flow
+  html += '<div class="pipeline-flow">';
+  DATA.stages.forEach(function(stage, i) {
+    if (i > 0) {
+      html += '<span class="pipeline-arrow">&#9654;</span>';
+    }
+    var bottleneck = stage.bottleneck ? ' bottleneck' : '';
+    var emptyClass = stage.count === 0 ? ' empty' : '';
+    html += '<div class="stage-card' + bottleneck + '" data-stage="' + stage.id + '" onclick="togglePanel(\'' + stage.id + '\')">';
+    html += '<div class="stage-label">' + stage.name + '</div>';
+    html += '<div class="stage-name">(' + stage.dir + ')</div>';
+    html += '<div class="stage-count' + emptyClass + '">' + stage.count + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Detail Panels
+  html += '<div class="detail-panels">';
+  DATA.stages.forEach(function(stage) {
+    html += '<div class="detail-panel" id="panel-' + stage.id + '">';
+    html += '<div class="detail-panel-header" onclick="togglePanel(\'' + stage.id + '\')">';
+    html += '<div><div class="dp-label">' + (stage.bottleneck ? 'BOTTLENECK' : stage.name) + '</div><div class="dp-title">' + stage.name + ' — ' + stage.dir + '</div></div>';
+    html += '<div style="display:flex;align-items:center;gap:8px"><span class="dp-count">' + stage.count + ' items</span><span class="dp-toggle" id="toggle-' + stage.id + '">&#9660;</span></div>';
+    html += '</div>';
+    html += '<div class="detail-panel-body" id="body-' + stage.id + '">';
+
+    if (stage.files.length === 0) {
+      html += '<div class="empty-state">' + (stage.bottleneck ? 'No items — potential bottleneck' : 'No items') + '</div>';
+    } else {
+      html += '<div class="file-list">';
+      stage.files.forEach(function(file, fi) {
+        var fileId = stage.id + '-file-' + fi;
+        html += '<div class="file-card">';
+        html += '<div class="file-card-summary" onclick="toggleFile(\'' + fileId + '\')">';
+        html += '<div class="fc-top">';
+        html += '<span class="fc-filename">' + escapeHtml(file.filename) + '</span>';
+        html += '<span class="fc-date">' + file.date + '</span>';
+        html += '</div>';
+
+        // Tags
+        if (file.tags && file.tags.length > 0) {
+          html += '<div class="fc-tags">';
+          file.tags.forEach(function(tag) {
+            html += '<span class="fc-tag ' + tagClass(tag) + '">#' + tag + '</span>';
+          });
+          html += '</div>';
+        }
+
+        // Rating
+        if (file.rating !== null && file.rating !== undefined) {
+          html += '<div><span class="fc-rating">' + file.rating + '/5</span></div>';
+        }
+
+        // Suggested angle (truncated)
+        if (file.suggested_angle) {
+          var angle = file.suggested_angle.length > 120 ? file.suggested_angle.substring(0, 120) + '...' : file.suggested_angle;
+          html += '<div class="fc-angle">"' + escapeHtml(angle) + '"</div>';
+        }
+
+        html += '</div>'; // summary
+
+        // Expanded body
+        html += '<div class="file-card-body" id="' + fileId + '">';
+        if (file.source) {
+          html += '<div class="fcb-label">Source</div>';
+          html += '<div class="fcb-source"><a href="' + escapeHtml(file.source) + '" target="_blank" rel="noopener">' + escapeHtml(file.source) + '</a></div>';
+        }
+        if (file.suggested_angle) {
+          html += '<div class="fcb-label">Suggested Angle</div>';
+          html += '<div class="fcb-angle-full">' + escapeHtml(file.suggested_angle) + '</div>';
+        }
+        if (file.body_preview) {
+          html += '<div class="fcb-label">Body Preview</div>';
+          html += '<div class="fcb-body-preview">' + escapeHtml(file.body_preview) + '</div>';
+        }
+        html += '</div>'; // body
+
+        html += '</div>'; // file-card
+      });
+      html += '</div>';
+    }
+
+    html += '</div>'; // body
+    html += '</div>'; // panel
+  });
+  html += '</div>';
+
+  // Templates section
+  html += '<div class="templates-section">';
+  html += '<h3>Templates</h3>';
+  html += '<div class="templates-list">';
+  DATA.templates.forEach(function(tpl) {
+    var parts = tpl.name.split(' ');
+    var abbr = parts[0];
+    html += '<a class="template-link" href="' + escapeHtml(tpl.path) + '"><span class="tl-abbr">' + abbr + '</span> ' + escapeHtml(tpl.name.replace(abbr, '')) + '</a>';
+  });
+  html += '</div></div>';
+
+  // Footer
+  html += '<div class="footer">The Foundry — Content Pipeline Dashboard — Generated from vault scan on ' + new Date().toISOString().split('T')[0] + '</div>';
+
+  app.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function togglePanel(id) {
+  var body = document.getElementById('body-' + id);
+  var toggle = document.getElementById('toggle-' + id);
+  if (!body) return;
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+  if (!isOpen) {
+    setTimeout(function() {
+      body.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+}
+
+function toggleFile(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+render();
+</script>
+</body>
+</html>
