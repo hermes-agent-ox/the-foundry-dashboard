@@ -1,0 +1,4 @@
+# Ignore everything except dashboard.html and .gitignore
+/*
+!/dashboard.html
+!.gitignore
