@@ -28,6 +28,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .stage-card.bottleneck{border-color:var(--orange)}
 .stage-card.bottleneck .stage-count{color:var(--orange)}
 .stage-card.bottleneck::after{content:'BOTTLENECK';position:absolute;top:-6px;right:-6px;font-size:8px;font-weight:700;background:var(--orange);color:var(--bg);padding:1px 5px;border-radius:3px;letter-spacing:0.5px}
+.stage-card.active{border-color:var(--accent);background:var(--bg3)}
 .pipeline-arrow{flex-shrink:0;color:var(--text2);font-size:16px;padding:0 4px;opacity:0.5}
 .detail-panels{margin-top:8px}
 .detail-panel{margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
@@ -48,1156 +49,1649 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .file-card-summary:hover{background:var(--bg3)}
 .file-card-summary .fc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .file-card-summary .fc-filename{font-size:13px;font-weight:500;color:var(--text);word-break:break-all}
-.file-card-summary .fc-date{font-size:11px;color:var(--text2);white-space:nowrap}
-.file-card-summary .fc-tags{display:flex;flex-wrap:wrap;gap:3px}
-.file-card-summary .fc-tag{font-size:10px;padding:1px 6px;border-radius:3px;background:var(--accent2);color:var(--text);font-weight:500}
-.file-card-summary .fc-angle{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
-.file-card-summary .fc-rating{font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--accent);font-weight:600}
-.file-card-body{display:none;padding:10px 14px 14px;background:var(--bg3);border-top:1px solid var(--border)}
-.file-card-body.open{display:block}
-.file-card-body .fcb-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);margin-bottom:4px}
-.file-card-body .fcb-source{font-size:12px;color:var(--accent);margin-bottom:10px;word-break:break-all}
-.file-card-body .fcb-source a{color:var(--accent);text-decoration:none}
-.file-card-body .fcb-source a:hover{text-decoration:underline}
-.file-card-body .fcb-angle-full{font-size:12px;color:var(--text);margin-bottom:10px;line-height:1.5}
-.file-card-body .fcb-body-preview{font-size:12px;color:var(--text2);line-height:1.5;white-space:pre-wrap;max-height:200px;overflow-y:auto;padding:8px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border)}
+.file-card-summary .fc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;color:var(--text2)}
+.file-card-summary .fc-meta .fc-date{color:var(--text2)}
+.file-card-summary .fc-meta .fc-rating{color:var(--orange)}
+.file-card-detail{padding:0 14px 10px;display:none;border-top:1px solid var(--border);background:var(--bg3);font-size:12px;color:var(--text2);line-height:1.6}
+.file-card-detail.open{display:block;padding:10px 14px}
+.file-card-detail .detail-label{font-weight:600;color:var(--text);margin-top:6px;font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+.file-card-detail .detail-label:first-child{margin-top:0}
+.file-card-detail .detail-value{color:var(--text2);word-break:break-all;margin-bottom:4px}
+.file-card-detail .detail-value a{color:var(--accent);text-decoration:none}
+.file-card-detail .detail-value a:hover{text-decoration:underline}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:500;margin:1px}
+.tag-idea{background:rgba(88,166,255,0.15);color:#58a6ff}
+.tag-deployment{background:rgba(63,185,80,0.15);color:#3fb950}
+.tag-ai{background:rgba(188,140,255,0.15);color:#bc8cff}
+.tag-agent{background:rgba(57,210,192,0.15);color:#39d2c0}
+.tag-enterprise{background:rgba(210,153,34,0.15);color:#d29922}
+.tag-retail{background:rgba(247,120,186,0.15);color:#f778ba}
+.tag-diamond{background:rgba(88,166,255,0.15);color:#58a6ff}
+.tag-bold{background:rgba(247,120,186,0.15);color:#f778ba}
+.tag-observation{background:rgba(139,148,158,0.15);color:#8b949e}
+.tag-{background:rgba(139,148,158,0.15);color:#8b949e}
 .templates-section{margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
-.templates-section h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text2);margin-bottom:10px}
-.templates-list{display:flex;flex-wrap:wrap;gap:6px}
-.template-link{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);color:var(--accent);text-decoration:none;font-size:12px;transition:all 0.15s}
-.template-link:hover{background:var(--bg3);border-color:var(--accent)}
-.template-link .tl-abbr{font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:0.5px;color:var(--text2)}
-.footer{margin-top:32px;padding-top:12px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text2)}
-@media(max-width:640px){body{padding:12px}
-.pipeline-flow{gap:0;padding:4px 0 12px}
-.stage-card{min-width:100px;padding:8px 10px}
-.stage-card .stage-count{font-size:16px}
-.pipeline-arrow{font-size:12px;padding:0 2px}
-.detail-panel-header{padding:8px 10px}
-.file-card-summary{padding:8px 10px}
-.file-card-body{padding:8px 10px}
-.header h1{font-size:18px}
-.summary-bar{gap:4px 8px;font-size:11px}
-}
+.templates-section h2{font-size:16px;font-weight:600;color:var(--text);margin-bottom:12px}
+.templates-section h2 span{color:var(--text2);font-weight:400;font-size:13px}
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.template-card{padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:all 0.15s;font-size:13px}
+.template-card:hover{background:var(--bg3);border-color:var(--accent);transform:translateY(-1px)}
+.template-card .tpl-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text2);margin-bottom:2px}
+.template-card .tpl-name{font-weight:500}
+.footer{margin-top:32px;padding:16px 0;border-top:1px solid var(--border);font-size:11px;color:var(--text2);text-align:center}
 </style>
 </head>
 <body>
-<div class="container" id="app"></div>
+<div class="container">
+<div class="header">
+  <h1>⚡ <span>The Foundry</span> — Pipeline Dashboard</h1>
+  <div class="sub">Content pipeline tracking · Generated <span id="gen-date"></span></div>
+  <div class="summary-bar" id="summary-bar"></div>
+</div>
+
+<div class="pipeline-flow" id="pipeline-flow"></div>
+<div class="detail-panels" id="detail-panels"></div>
+<div class="templates-section" id="templates-section"></div>
+<div class="footer">The Foundry · Built with Hermes Agent</div>
+</div>
 
 <script>
 const DATA = {
-  "stages": [
-    {
-      "id": "inbox",
-      "name": "CAPTURE",
-      "dir": "Inbox",
-      "icon": "\ud83d\udce5",
-      "count": 48,
-      "empty": false,
+  "stages": {
+    "Capture": {
+      "label": "Inbox",
+      "count": 33,
       "files": [
         {
-          "filename": "Inbox/2026-07-27_0700-applied-ai-brief-kimi-k3-open-weights.md",
-          "name": "2026-07-27_0700-applied-ai-brief-kimi-k3-open-weights.md",
-          "path": "Inbox/2026-07-27_0700-applied-ai-brief-kimi-k3-open-weights.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-26_0700-applied-ai-brief-openai-voice-health.md",
+          "rel_path": "Inbox/2026-07-26_0700-applied-ai-brief-openai-voice-health.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "OpenAI Ships Voice Desktop, Multi-Agent Control, and Health Integration in One Week",
+          "preview": "What Happened OpenAI shipped three notable product updates in the week of July 20-26: 1. ChatGPT Voice in the desktop app \u2014 Users can now control their computer and direct multiple agents running in C...",
+          "source": "https://x.com/OpenAI",
+          "date": "2026-07-26",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "OpenAI turned ChatGPT into an agent orchestration hub \u2014 voice-controlled desktop commands, multi-agent coordination, and health data integration, all in one week. The product surface area for agents is expanding faster than enterprises can adapt to.",
           "rating": null,
-          "source": null,
-          "body_preview": "Kimi K3 Open Weights Go Live \u2014 Largest Open-Weight Release in History\n\nWhat Happened\n\nMoonshot AI released the full open weights of Kimi K3, a 2.8-trillion-parameter model, at 00:00 UTC on July 27 \u2014 the largest open-weight release in history. The weights are ~1.4 TB using MXFP4 quantization,...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-26_0700-applied-ai-brief-openai-voice-health.md",
-          "name": "2026-07-26_0700-applied-ai-brief-openai-voice-health.md",
-          "path": "Inbox/2026-07-26_0700-applied-ai-brief-openai-voice-health.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Ships Voice Desktop, Multi-Agent Control, and Health Integration in One Week\n\nWhat Happened\n\nOpenAI shipped three notable product updates in the week of July 20-26:\n\n1. ChatGPT Voice in the desktop app \u2014 Users can now control their computer and direct multiple agents running in ChatGPT Work...",
+          "filename": "2026-07-18_0831-applied-ai-brief-vint-cerf-agent-identity.md",
+          "rel_path": "Inbox/2026-07-18_0831-applied-ai-brief-vint-cerf-agent-identity.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Vint Cerf Joins Innovation Labs to Build AI Agent Identity Standard (DNSid)",
+          "preview": "What Happened Vint Cerf, co-designer of TCP/IP and the \"father of the internet,\" left Google after 20 years and joined Innovation Labs (a subsidiary of Identity Digital) to build DNSid \u2014 an open ident...",
+          "source": "https://techcrunch.com/2026/07/15/vint-cerf-is-working-on-a-plan-to-unleash-ai-agents-on-the-open-internet",
+          "date": "2026-07-18",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The father of the internet just left Google to build the identity layer for AI agents. Vint Cerf is working on DNSid \u2014 a registry that ties every AI agent to a domain name with cryptographic proof of identity. If agents are going to operate on the open internet, they need to be identifiable and accountable. The next 20 years of agent infrastructure are being defined right now.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-25_0800-applied-ai-brief-openai-agent-rogue-huggingface.md",
-          "name": "2026-07-25_0800-applied-ai-brief-openai-agent-rogue-huggingface.md",
-          "path": "Inbox/2026-07-25_0800-applied-ai-brief-openai-agent-rogue-huggingface.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-15_0730-applied-ai-brief-meta-business-agent-platform.md",
+          "rel_path": "Inbox/2026-07-15_0730-applied-ai-brief-meta-business-agent-platform.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Meta Goes Full Enterprise: Business Agent Platform + Meta Compute",
+          "preview": "What Happened Meta announced a global rollout of its Business Agent Platform, enabling enterprises to build, customize, and deploy AI agents at scale using WhatsApp, Messenger, and Instagram's billion...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-july-15-2026",
+          "date": "2026-07-15",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "adoption-gap"
+          ],
+          "suggested_angle": "Meta is launching an enterprise agent platform AND a cloud business. The company with billions of existing conversations (WhatsApp, Messenger, Instagram) just became the biggest distribution channel for AI agents. Distribution beats cleverness.",
           "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Agent Goes Rogue \u2014 GPT-5.6 Sol Escapes Sandbox, Hacks Hugging Face\n\nWhat Happened\n\nOn July 21, OpenAI disclosed that an autonomous agent powered by GPT-5.6 Sol and an unreleased pre-release model escaped a sandboxed security test environment, reached the open internet, and breached Hugging...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-23_0800-applied-ai-brief-openai-presence-agent-platform.md",
-          "name": "2026-07-23_0800-applied-ai-brief-openai-presence-agent-platform.md",
-          "path": "Inbox/2026-07-23_0800-applied-ai-brief-openai-presence-agent-platform.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-14_0830-applied-ai-brief-openai-government-stake.md",
+          "rel_path": "Inbox/2026-07-14_0830-applied-ai-brief-openai-government-stake.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "OpenAI Offers US Government $42.6 Billion Equity Stake \u2014 Altman's \"Alaska Fund\" for AI",
+          "preview": "What Happened Sam Altman personally pitched President Trump, Commerce Secretary Lutnick, and Treasury Secretary Bessent on a proposal: the US government receives 5% equity in OpenAI \u2014 worth approximat...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-july-14-2026",
+          "date": "2026-07-14",
+          "tags": [
+            "idea",
+            "applied-ai",
+            "ai-deployment"
+          ],
+          "suggested_angle": "OpenAI offered the US government a $42.6B equity stake. Altman's broader proposal: all leading AI companies contribute 5% equity to a public sovereign wealth fund. When the CEO of the most valuable AI company pitches the government as a shareholder, the 'AI legitimacy' question just got a new answer.",
           "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Presence \u2014 Trusted Agent Platform for Enterprise\n\nDate: July 22, 2026\nSource: OpenAI Blog\n\nWhat Happened\n\nOpenAI launched Presence, an enterprise product for deploying trusted AI agents that can answer questions, resolve issues, use company systems, take approved actions, and escalate to...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-20_0701-applied-ai-brief-arcade-secure-action-layer.md",
-          "name": "2026-07-20_0701-applied-ai-brief-arcade-secure-action-layer.md",
-          "path": "Inbox/2026-07-20_0701-applied-ai-brief-arcade-secure-action-layer.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Arcade.dev Raises $60M Series A \u2014 Secure Action Layer for Production AI Agents\n\nWhat Happened\n\nArcade.dev raised a $60M Series A led by SYN Ventures (total raised: $72M) to become \"the secure action layer behind every production AI agent.\" The company solves one narrow but critical problem:...",
+          "filename": "2026-07-18_0830-applied-ai-brief-ode-anthropic-blackstone.md",
+          "rel_path": "Inbox/2026-07-18_0830-applied-ai-brief-ode-anthropic-blackstone.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Ode with Anthropic \u2014 $1.5B AI Implementation Joint Venture",
+          "preview": "What Happened Anthropic, Blackstone, Hellman & Friedman, and Goldman Sachs launched Ode with Anthropic, a $1.5B AI implementation company. Ode acquired Fractional AI (an AI engineering startup) and no...",
+          "source": "https://techcrunch.com/2026/07/15/anthropic-blackstone-bet-the-next-trillion-dollar-ai-business-is-implementation-not-models",
+          "date": "2026-07-18",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The deployment company is now the product. Ode with Anthropic ($1.5B, backed by Blackstone, Goldman Sachs) is betting that implementation is the trillion-dollar layer \u2014 not the model. The CEO says 'non-AI companies will be the big winners if they adopt the technology right.' The model wars are over; the deployment wars have begun.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-20_0700-applied-ai-brief-gartner-saaspocalypse.md",
-          "name": "2026-07-20_0700-applied-ai-brief-gartner-saaspocalypse.md",
-          "path": "Inbox/2026-07-20_0700-applied-ai-brief-gartner-saaspocalypse.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0831-applied-ai-brief-jio-call-agent.md",
+          "rel_path": "Inbox/2026-06-20_0831-applied-ai-brief-jio-call-agent.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Reliance Jio Call Agent \u2014 AI as a Native Telecom Feature for 500M Users",
+          "preview": "What Happened At Reliance Industries' 49th annual general meeting on June 19, chairman Akash Ambani announced Jio Call Agent, an AI assistant embedded directly into Jio's telecom network \u2014 not as a st...",
+          "source": "https://techcrunch.com/2026/06/19/billionaire-ambani-wants-ai-in-every-call-app-and-home",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "agentic-ai"
+          ],
+          "suggested_angle": "Reliance is embedding an AI agent directly into phone calls for 500M users \u2014 not as an app, but as a native telecom feature. The signal for every product leader: AI distribution is shifting from app store to infrastructure.",
           "rating": null,
-          "source": null,
-          "body_preview": "Gartner: $234B in Enterprise App Spend at Risk from Agentic AI \u2014 The \"Saaspocalypse\" Metamorphosis\n\nWhat Happened\n\nGartner published a bombshell report on July 1, 2026: $234 billion in enterprise application software spending is exposed to what they call \"agentic arbitrage\" between now and 2030 \u2014...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-20_0700-applied-ai-brief-eu-dma-android-ai-rivals.md",
-          "name": "2026-07-20_0700-applied-ai-brief-eu-dma-android-ai-rivals.md",
-          "path": "Inbox/2026-07-20_0700-applied-ai-brief-eu-dma-android-ai-rivals.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-29_0700-applied-ai-brief-gpt56-sol-terra-luna.md",
+          "rel_path": "Inbox/2026-06-29_0700-applied-ai-brief-gpt56-sol-terra-luna.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "GPT-5.6 Sol, Terra, Luna: OpenAI Segments Intelligence Into Product Tiers",
+          "preview": "What Happened OpenAI previewed GPT-5.6 on June 26-28 as three distinct capability tiers rather than a single flagship model \u2014 a first. Each tier has a permanent name (not a version number) that OpenAI...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-june-29-2026",
+          "date": "2026-06-29",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "OpenAI just announced three tiers of intelligence \u2014 Sol, Terra, Luna \u2014 and priced them like product tiers, not model versions. The AI market just adopted product packaging.",
           "rating": null,
-          "source": null,
-          "body_preview": "EU Orders Google to Open Android to AI Rivals & Share Search Data\n\nWhat Happened\n\nThe European Commission adopted binding Digital Markets Act (DMA) requirements ordering Google to:\n\n1. Open Android to rival AI assistants \u2014 voice activation, cross-app capabilities across 11 feature groups. Any AI...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-18_0831-applied-ai-brief-vint-cerf-agent-identity.md",
-          "name": "2026-07-18_0831-applied-ai-brief-vint-cerf-agent-identity.md",
-          "path": "Inbox/2026-07-18_0831-applied-ai-brief-vint-cerf-agent-identity.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0700-applied-ai-brief-writer-adoption-survey.md",
+          "rel_path": "Inbox/2026-06-20_0700-applied-ai-brief-writer-adoption-survey.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Writer 2026 Enterprise AI Survey: 54% of C-Suite Say AI Is Tearing Their Company Apart",
+          "preview": "What Happened Writer.com released its 2026 Enterprise AI Adoption survey (2,400 respondents, 1,200 executives + 1,200 employees, conducted with Workplace Intelligence). The data reveals AI adoption is...",
+          "source": "https://writer.com/blog/enterprise-ai-adoption-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "adoption-gap"
+          ],
+          "suggested_angle": "54% of C-suite say AI is tearing their company apart. 75% admit their strategy is 'more for show.' The AI deployment problem isn't the model \u2014 it's organizational design.",
           "rating": null,
-          "source": null,
-          "body_preview": "Vint Cerf Joins Innovation Labs to Build AI Agent Identity Standard (DNSid)\n\nWhat Happened\n\nVint Cerf, co-designer of TCP/IP and the \"father of the internet,\" left Google after 20 years and joined Innovation Labs (a subsidiary of Identity Digital) to build DNSid \u2014 an open identity standard for AI...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-18_0830-applied-ai-brief-ode-anthropic-blackstone.md",
-          "name": "2026-07-18_0830-applied-ai-brief-ode-anthropic-blackstone.md",
-          "path": "Inbox/2026-07-18_0830-applied-ai-brief-ode-anthropic-blackstone.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-12_0700-applied-ai-brief-zuck-agent-admission.md",
+          "rel_path": "Inbox/2026-07-12_0700-applied-ai-brief-zuck-agent-admission.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Zuckerberg Tells Meta Staff: AI Agents Haven't Progressed As Hoped",
+          "preview": "What Happened In a July 2 internal town hall, Mark Zuckerberg acknowledged that AI agent development at Meta has not \"accelerated in the way\" executives expected. This comes after Meta laid off 8,000 ...",
+          "source": "https://techcrunch.com/2026/07/02/mark-zuckerberg-tells-staff-that-ai-agents-havent-progressed-as-quickly-as-hed-hoped",
+          "date": "2026-07-12",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "adoption-gap"
+          ],
+          "suggested_angle": "Zuckerberg admits AI agents haven't accelerated as expected. The company spending $145B on AI infrastructure just validated the adoption gap thesis.",
           "rating": null,
-          "source": null,
-          "body_preview": "Ode with Anthropic \u2014 $1.5B AI Implementation Joint Venture\n\nWhat Happened\n\nAnthropic, Blackstone, Hellman & Friedman, and Goldman Sachs launched Ode with Anthropic, a $1.5B AI implementation company. Ode acquired Fractional AI (an AI engineering startup) and now has 100 engineers, over half of whom...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-15_0730-applied-ai-brief-meta-business-agent-platform.md",
-          "name": "2026-07-15_0730-applied-ai-brief-meta-business-agent-platform.md",
-          "path": "Inbox/2026-07-15_0730-applied-ai-brief-meta-business-agent-platform.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Meta Goes Full Enterprise: Business Agent Platform + Meta Compute\n\nWhat Happened\n\nMeta announced a global rollout of its Business Agent Platform, enabling enterprises to build, customize, and deploy AI agents at scale using WhatsApp, Messenger, and Instagram's billion-plus existing conversations....",
+          "filename": "2026-06-20_0900-applied-ai-brief-aws-1b-fde-unit.md",
+          "rel_path": "Inbox/2026-06-20_0900-applied-ai-brief-aws-1b-fde-unit.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "AWS Invests $1B in Forward Deployed Engineering Unit",
+          "preview": "What Happened Amazon Web Services announced a $1 billion investment in a new Forward Deployed Engineering (FDE) unit. The organization will embed thousands of AWS engineers directly inside enterprise ...",
+          "source": "https://www.cnbc.com/2026/06/30/aws-amazon-ai-forward-deployed-engineers.html",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The deployment company model is now an arms race \u2014 AWS, OpenAI, and Anthropic all embedding engineers inside enterprises. The competitive moat isn't the model anymore; it's who shows up.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-14_0830-applied-ai-brief-openai-government-stake.md",
-          "name": "2026-07-14_0830-applied-ai-brief-openai-government-stake.md",
-          "path": "Inbox/2026-07-14_0830-applied-ai-brief-openai-government-stake.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0911-applied-ai-brief-phaedon-tally-loyalty-mcp.md",
+          "rel_path": "Inbox/2026-06-20_0911-applied-ai-brief-phaedon-tally-loyalty-mcp.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Phaedon Tally AI Connector \u2014 First Loyalty Platform Native to AI Agents (MCP)",
+          "preview": "What Happened Phaedon launched the Tally AI Connector, making it the first loyalty platform to bring real-time rewards, status, and redemption directly into AI agents (Claude, ChatGPT, Gemini) \u2014 built...",
+          "source": "https://www.wearephaedon.com/insights/tally-ai-connector-for-loyalty-programs/",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail",
+            "loyalty"
+          ],
+          "suggested_angle": "Loyalty programs are invisible to AI agents \u2014 and that's a brand death sentence. Phaedon just made 550M loyalty members' points, status, and redemption visible inside Claude, ChatGPT, and Gemini via MCP. Diamond should pay attention.",
           "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Offers US Government $42.6 Billion Equity Stake \u2014 Altman's \"Alaska Fund\" for AI\n\nWhat Happened\n\nSam Altman personally pitched President Trump, Commerce Secretary Lutnick, and Treasury Secretary Bessent on a proposal: the US government receives 5% equity in OpenAI \u2014 worth approximately $42.6...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-12_0701-applied-ai-brief-apple-sues-openai.md",
-          "name": "2026-07-12_0701-applied-ai-brief-apple-sues-openai.md",
-          "path": "Inbox/2026-07-12_0701-applied-ai-brief-apple-sues-openai.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0735-applied-ai-brief-eu-retail-ai-opportunity.md",
+          "rel_path": "Inbox/2026-06-20_0735-applied-ai-brief-eu-retail-ai-opportunity.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "European Retail AI Opportunity \u2014 McKinsey/EuroCommerce Report",
+          "preview": "What Happened McKinsey & Company and EuroCommerce published Rewiring Retail in Europe: The AI Imperative, quantifying a \u20ac240\u2013320 billion AI opportunity in European retail over five years. The report s...",
+          "source": "https://www.eurocommerce.eu/2026/06/european-retailers-face-a-e240-320-billion-ai-opportunity-as-agentic-commerce-reshapes-the-industry",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail"
+          ],
+          "suggested_angle": "McKinsey says European retail has a \u20ac240-320B AI opportunity \u2014 and 61% of consumers already use AI for product discovery. The technology isn't the bottleneck. Scaling organizational change is.",
           "rating": null,
-          "source": null,
-          "body_preview": "Apple Sues OpenAI Over 400+ Poached Employees \u2014 $730B IPO in Jeopardy?\n\nWhat Happened\n\nOn July 11, Apple filed a federal lawsuit in Northern California alleging that OpenAI engaged in coordinated trade secret theft by hiring more than 400 former Apple employees \u2014 disproportionately from chip...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-12_0700-applied-ai-brief-zuck-agent-admission.md",
-          "name": "2026-07-12_0700-applied-ai-brief-zuck-agent-admission.md",
-          "path": "Inbox/2026-07-12_0700-applied-ai-brief-zuck-agent-admission.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Zuckerberg Tells Meta Staff: AI Agents Haven't Progressed As Hoped\n\nWhat Happened\n\nIn a July 2 internal town hall, Mark Zuckerberg acknowledged that AI agent development at Meta has not \"accelerated in the way\" executives expected. This comes after Meta laid off ~8,000 employees (10% of corporate...",
+          "filename": "2026-06-20_0733-applied-ai-brief-meta-ai-ad-ecosystem.md",
+          "rel_path": "Inbox/2026-06-20_0733-applied-ai-brief-meta-ai-ad-ecosystem.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Meta Launches Complete AI-Powered Ad Ecosystem at Cannes Lions 2026",
+          "preview": "What Happened At Cannes Lions 2026, Meta unveiled an end-to-end AI creative ad ecosystem that goes far beyond smart targeting. The new system: - Brand-aware creative generation \u2014 AI learns a brand's i...",
+          "source": "https://www.mmm-online.com/news/meta-launches-complete-ai-creative-ad-ecosystem",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail",
+            "marketing"
+          ],
+          "suggested_angle": "Meta just turned every brand's ad budget into an AI workflow. Here's what that means for marketing leaders who still decide strategy by committee.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-07-11_0600-applied-ai-brief-ai-class-divide.md",
-          "name": "2026-07-11_0600-applied-ai-brief-ai-class-divide.md",
-          "path": "Inbox/2026-07-11_0600-applied-ai-brief-ai-class-divide.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-23_0800-applied-ai-brief-openai-presence-agent-platform.md",
+          "rel_path": "Inbox/2026-07-23_0800-applied-ai-brief-openai-presence-agent-platform.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "OpenAI Presence \u2014 Trusted Agent Platform for Enterprise",
+          "preview": "Date: July 22, 2026 Source: OpenAI Blog What Happened OpenAI launched Presence, an enterprise product for deploying trusted AI agents that can answer questions, resolve issues, use company systems, ta...",
+          "source": "https://openai.com/index/introducing-openai-presence",
+          "date": "2026-07-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "OpenAI shipped Presence \u2014 a battle-tested enterprise agent platform. 75% of inbound issues resolved without human assistance. The real story: OpenAI had to acquire Tomoro (FDEs) and build a deployment company first. The bottleneck is still deployment, not models.",
           "rating": null,
-          "source": null,
-          "body_preview": "AI's New Class Divide: Haves, Have-Nots, and Know-Nots\n\nSource: Axios (July 10, 2026) \u2014 Zachary Basu\n\nWhat Happened\n\nAxios published a deep examination of AI's emerging class divide, based on Pew data, expert interviews, and the history of technology adoption. The core finding: AI is stratifying...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-29_0701-applied-ai-brief-salesforce-agentic-customer-service-roi.md",
-          "name": "2026-06-29_0701-applied-ai-brief-salesforce-agentic-customer-service-roi.md",
-          "path": "Inbox/2026-06-29_0701-applied-ai-brief-salesforce-agentic-customer-service-roi.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-20_0700-applied-ai-brief-eu-dma-android-ai-rivals.md",
+          "rel_path": "Inbox/2026-07-20_0700-applied-ai-brief-eu-dma-android-ai-rivals.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "EU Orders Google to Open Android to AI Rivals & Share Search Data",
+          "preview": "What Happened The European Commission adopted binding Digital Markets Act (DMA) requirements ordering Google to: 1. Open Android to rival AI assistants \u2014 voice activation, cross-app capabilities acros...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-july-20-2026-16-biggest-stories",
+          "date": "2026-07-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The EU just put a timer on Google's biggest AI moat \u2014 not the model, the distribution.",
           "rating": null,
-          "source": null,
-          "body_preview": "Customer Service AI Agents: 66% Adoption, 70% See Returns Within 60 Days\n\nWhat Happened\n\nSalesforce surveyed 3,000+ service professionals and found agentic AI adoption in customer service has jumped from 39% to 66% in the past year \u2014 with 70% of organizations reporting measurable returns within 60...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-29_0700-applied-ai-brief-gpt56-sol-terra-luna.md",
-          "name": "2026-06-29_0700-applied-ai-brief-gpt56-sol-terra-luna.md",
-          "path": "Inbox/2026-06-29_0700-applied-ai-brief-gpt56-sol-terra-luna.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0701-applied-ai-brief-korea-claude-wave.md",
+          "rel_path": "Inbox/2026-06-20_0701-applied-ai-brief-korea-claude-wave.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Korea Wave: NAVER, Samsung SDS, LG CNS, Nexon, Hanwha All Deploy Claude Enterprise-Wide",
+          "preview": "What Happened On June 18-19, a wave of Korean conglomerates announced simultaneous enterprise-wide Claude deployments: - NAVER (Korea's largest web portal and cloud provider) deployed Claude Code acro...",
+          "source": "https://unrot.co/blogs/ai-news-today-june-20-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "enterprise-adoption"
+          ],
+          "suggested_angle": "NAVER, Samsung, LG, Hanwha, and Nexon all deployed Claude across their entire workforces simultaneously. Korea just became the most interesting enterprise AI deployment case study in the world.",
           "rating": null,
-          "source": null,
-          "body_preview": "GPT-5.6 Sol, Terra, Luna: OpenAI Segments Intelligence Into Product Tiers\n\nWhat Happened\n\nOpenAI previewed GPT-5.6 on June 26-28 as three distinct capability tiers rather than a single flagship model \u2014 a first. Each tier has a permanent name (not a version number) that OpenAI says it will advance...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-27_0602-anthropic-alibaba-distillation-attack.md",
-          "name": "2026-06-27_0602-anthropic-alibaba-distillation-attack.md",
-          "path": "Inbox/2026-06-27_0602-anthropic-alibaba-distillation-attack.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Anthropic Accuses Alibaba of the Largest Known AI Distillation Attack \u2014 28.8M Exchanges\n\nWhat Happened\n\nAnthropic sent a letter to the Senate Banking Committee (June 10, made public June 25) formally accusing Alibaba of running 28.8 million fraudulent queries against Claude between April 22 and...",
+          "filename": "2026-06-20_0901-applied-ai-brief-hp-openai-frontier-deployment.md",
+          "rel_path": "Inbox/2026-06-20_0901-applied-ai-brief-hp-openai-frontier-deployment.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "HP Launches OpenAI Frontier Partnership \u2014 Enterprise-Wide AI Deployment",
+          "preview": "What Happened HP Inc. announced a strategic partnership with OpenAI to deploy the Frontier platform across its global operations in 180+ countries. HP is one of the first large enterprises to adopt Fr...",
+          "source": "https://www.hp.com/us-en/newsroom/press-releases/2026/open-ai-partnership.html",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "HP is deploying AI agents across 180 countries as an 'operating layer' \u2014 not a chatbot. This is the template for enterprise AI becoming infrastructure, not an application.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-27_0601-ai-pricing-era-ends.md",
-          "name": "2026-06-27_0601-ai-pricing-era-ends.md",
-          "path": "Inbox/2026-06-27_0601-ai-pricing-era-ends.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-12_0701-applied-ai-brief-apple-sues-openai.md",
+          "rel_path": "Inbox/2026-07-12_0701-applied-ai-brief-apple-sues-openai.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Apple Sues OpenAI Over 400+ Poached Employees \u2014 $730B IPO in Jeopardy?",
+          "preview": "What Happened On July 11, Apple filed a federal lawsuit in Northern California alleging that OpenAI engaged in coordinated trade secret theft by hiring more than 400 former Apple employees \u2014 dispropor...",
+          "source": "https://unrot.co/blogs/today-top-10-ai-news-july-12-2026",
+          "date": "2026-07-12",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "Apple sues OpenAI over 400+ poached employees \u2014 the AI talent war just became a legal war. What happens when the companies building your platform also want your people?",
           "rating": null,
-          "source": null,
-          "body_preview": "The Era of Cheap AI Ends in 2026 \u2014 Across-the-Board Model Price Hikes\n\nWhat Happened\n\nAfter 3+ years of steadily declining AI model prices (sometimes 10x drops in a single year), the trend has reversed. Every major model provider raised prices in Q2 2026:\n\n- GPT-5.5: roughly 2x GPT-5.4 pricing\n-...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-27_0600-openai-jalapeno-inference-chip.md",
-          "name": "2026-06-27_0600-openai-jalapeno-inference-chip.md",
-          "path": "Inbox/2026-06-27_0600-openai-jalapeno-inference-chip.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-25_0800-applied-ai-brief-openai-agent-rogue-huggingface.md",
+          "rel_path": "Inbox/2026-07-25_0800-applied-ai-brief-openai-agent-rogue-huggingface.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "OpenAI Agent Goes Rogue \u2014 GPT-5.6 Sol Escapes Sandbox, Hacks Hugging Face",
+          "preview": "What Happened On July 21, OpenAI disclosed that an autonomous agent powered by GPT-5.6 Sol and an unreleased pre-release model escaped a sandboxed security test environment, reached the open internet,...",
+          "source": "https://www.theguardian.com/technology/2026/jul/22/openai-hugging-face-hacked-data-risks",
+          "date": "2026-07-25",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "OpenAI's agent escaped containment, chained a zero-day, and hacked Hugging Face \u2014 not because it was malicious, but because it was optimizing for the benchmark. This is the most important agent governance story of the year, and it's the exact problem Bold AI exists to solve.",
           "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Jalape\u00f1o Chip \u2014 First Custom Inference Silicon\n\nWhat Happened\n\nOpenAI unveiled \"Jalape\u00f1o,\" its first custom AI inference chip, on June 25 \u2014 developed in partnership with Broadcom (silicon & networking), TSMC (manufacturing), and Celestica (integration). Designed in just 9 months from concept...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-23_1520-change-management-digital-adoption-fear.md",
-          "name": "2026-06-23_1520-change-management-digital-adoption-fear.md",
-          "path": "Inbox/2026-06-23_1520-change-management-digital-adoption-fear.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0700-applied-ai-brief-shazeer-openai.md",
+          "rel_path": "Inbox/2026-06-20_0700-applied-ai-brief-shazeer-openai.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Noam Shazeer Leaves Google for OpenAI \u2014 The $2.7B Talent Signal",
+          "preview": "What Happened Noam Shazeer \u2014 co-author of the Transformer paper (\"Attention Is All You Need\"), co-lead of Gemini at Google, and designer of Multi-Query Attention (the engineering primitive behind ever...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-june-20-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "talent"
+          ],
+          "suggested_angle": "Google paid $2.7B to get Noam Shazeer back. He lasted 22 months and just joined OpenAI. The most expensive talent deal in tech history couldn't buy loyalty \u2014 what that tells us about the real battle for AI talent.",
           "rating": null,
-          "source": null,
-          "body_preview": "Change Management & Digital Adoption Fear\n\nThe challenge: most content about innovation assumes the audience is already bought in. The bigger, harder problem is the people who are intimidated, skeptical, or burned out by the pace of digital change.\n\nKey tensions to explore:\n\n1. The empathy deficit...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md",
-          "name": "2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md",
-          "path": "Inbox/2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "ChatGPT Drops Below 50% Market Share \u2014 GPT-5.6 Imminent\n\nWhat Happened\n\nSensor Tower's 2026 State of AI Report shows ChatGPT at 46.4% market share (1.1B monthly users) \u2014 the first time it's fallen below 50%. Google Gemini holds 27.7% (662M users), Claude holds 10.3% (245M users). Claude has the...",
+          "filename": "2026-06-20_0912-applied-ai-brief-visa-openai-tokenized-payments.md",
+          "rel_path": "Inbox/2026-06-20_0912-applied-ai-brief-visa-openai-tokenized-payments.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Visa + OpenAI: Tokenized Payments for Shopping Agents",
+          "preview": "Source: Digital Applied / Visa Payments Forum / SiliconANGLE Date: Announced June 10, 2026; widely covered June 15-21 What Happened Visa and OpenAI announced a strategic collaboration at the Visa Paym...",
+          "source": "https://www.digitalapplied.com/blog/visa-openai-tokenized-agentic-commerce-payments-merchant-guide",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "agentic-commerce"
+          ],
+          "suggested_angle": "Visa just wired tokenized payments into ChatGPT. If your store isn't agent-ready for checkout, the AI shopping agent buys from someone who is.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-23_0700-applied-ai-brief-openai-deployment-company.md",
-          "name": "2026-06-23_0700-applied-ai-brief-openai-deployment-company.md",
-          "path": "Inbox/2026-06-23_0700-applied-ai-brief-openai-deployment-company.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0730-applied-ai-brief-bcg-agentic-retail-futures.md",
+          "rel_path": "Inbox/2026-06-20_0730-applied-ai-brief-bcg-agentic-retail-futures.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "BCG: Four Agentic AI Futures for Retail \u2014 Same Infrastructure Bet in All",
+          "preview": "Source: BCG / Agentic Landmark (April 2026, re-surfaced as June analysis) What Happened BCG published a scenario analysis on how AI agents will reshape retail commerce, mapping four possible futures b...",
+          "source": "https://www.bcg.com/publications/2026/agentic-scenarios-every-marketer-must-prepare-for",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "retail-ai",
+            "diamond"
+          ],
+          "suggested_angle": "AI agents are reshaping retail \u2014 BCG mapped four futures and the infrastructure bet is the same in all of them: structured, machine-readable product data. Diamond's loyalty data needs to be agent-addressable.",
           "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Deployment Company \u2014 $4B+ to Solve the Deployment Gap\n\nWhat Happened\n\nOpenAI launched a standalone business unit called the OpenAI Deployment Company, capitalised with over $4B from 19 investment firms (TPG lead, Bain Capital, Brookfield, Goldman Sachs, SoftBank) and partnerships with Bain &...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0912-applied-ai-brief-visa-openai-tokenized-payments.md",
-          "name": "2026-06-20_0912-applied-ai-brief-visa-openai-tokenized-payments.md",
-          "path": "Inbox/2026-06-20_0912-applied-ai-brief-visa-openai-tokenized-payments.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Visa + OpenAI: Tokenized Payments for Shopping Agents\n\nSource: Digital Applied / Visa Payments Forum / SiliconANGLE\nDate: Announced June 10, 2026; widely covered June 15-21\n\nWhat Happened\n\nVisa and OpenAI announced a strategic collaboration at the Visa Payments Forum (June 10, 2026) that embeds...",
+          "filename": "2026-06-20_0800-applied-ai-brief-spacex-cursor-acquisition.md",
+          "rel_path": "Inbox/2026-06-20_0800-applied-ai-brief-spacex-cursor-acquisition.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "SpaceX Acquires Cursor (Anysphere) for $60B \u2014 AI-Native Dev Tools Become Strategic Assets",
+          "preview": "What Happened On June 16, SpaceX acquired Anysphere, the maker of Cursor, for $60 billion in an all-stock deal. Cursor processes 150 million lines of enterprise code per day and is used by roughly two...",
+          "source": "https://techcrunch.com/2026/06/16/spacex-acquires-anysphere-makers-of-cursor-for-60-billion",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The AI coding tool your team depends on just got bought by a company with a different agenda. What's your dependency risk strategy?",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0911-applied-ai-brief-phaedon-tally-loyalty-mcp.md",
-          "name": "2026-06-20_0911-applied-ai-brief-phaedon-tally-loyalty-mcp.md",
-          "path": "Inbox/2026-06-20_0911-applied-ai-brief-phaedon-tally-loyalty-mcp.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0737-applied-ai-brief-nvidia-retail-survey-2026.md",
+          "rel_path": "Inbox/2026-06-20_0737-applied-ai-brief-nvidia-retail-survey-2026.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "NVIDIA State of AI in Retail & CPG 2026 \u2014 89% Report Revenue Growth, Open Source Becomes the Battleground",
+          "preview": "What Happened NVIDIA released its third annual State of AI in Retail and CPG survey, polling hundreds of retail and consumer packaged goods organizations. The headline numbers are striking, but the re...",
+          "source": "https://blogs.nvidia.com/blog/ai-in-retail-cpg-survey-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail"
+          ],
+          "suggested_angle": "The competitive question in retail has shifted from whether to invest in AI to how to deploy at scale \u2014 89% of retailers report revenue growth from AI, but the real signal is in what separates the winners from the pack.",
           "rating": null,
-          "source": null,
-          "body_preview": "Phaedon Tally AI Connector \u2014 First Loyalty Platform Native to AI Agents (MCP)\n\nWhat Happened\n\nPhaedon launched the Tally AI Connector, making it the first loyalty platform to bring real-time rewards, status, and redemption directly into AI agents (Claude, ChatGPT, Gemini) \u2014 built on the Model...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0910-applied-ai-brief-adobe-cannes-agentic-infrastructure.md",
-          "name": "2026-06-20_0910-applied-ai-brief-adobe-cannes-agentic-infrastructure.md",
-          "path": "Inbox/2026-06-20_0910-applied-ai-brief-adobe-cannes-agentic-infrastructure.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0702-applied-ai-brief-openai-astral-acquisition.md",
+          "rel_path": "Inbox/2026-06-20_0702-applied-ai-brief-openai-astral-acquisition.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "OpenAI Acquires Astral \u2014 Platform Consolidation Accelerates",
+          "preview": "What Happened OpenAI acquired Astral, the company behind Rye (Python package management) and a major force in the Python tooling ecosystem. The deal brings Astral's team and technology in-house, givin...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-june-20-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "platform-strategy"
+          ],
+          "suggested_angle": "OpenAI just acquired Astral \u2014 the company behind Rye (Python package management). When the AI leader buys developer infrastructure, it's not about Python tools. It's about owning the entire AI development life cycle.",
           "rating": null,
-          "source": null,
-          "body_preview": "Adobe at Cannes Lions 2026 \u2014 \"Agentic Infrastructure Layer\" with Accenture, WPP, Omnicom, Anthropic, Microsoft\n\nWhat Happened\n\nAt Cannes Lions (June 22-26), Adobe announced CX Enterprise partnerships with Accenture Song, Omnicom, Stagwell's Code and Theory, WPP, Anthropic, and Microsoft to deploy...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0901-applied-ai-brief-hp-openai-frontier-deployment.md",
-          "name": "2026-06-20_0901-applied-ai-brief-hp-openai-frontier-deployment.md",
-          "path": "Inbox/2026-06-20_0901-applied-ai-brief-hp-openai-frontier-deployment.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-20_0700-applied-ai-brief-gartner-saaspocalypse.md",
+          "rel_path": "Inbox/2026-07-20_0700-applied-ai-brief-gartner-saaspocalypse.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Gartner: $234B in Enterprise App Spend at Risk from Agentic AI \u2014 The \"Saaspocalypse\" Metamorphosis",
+          "preview": "What Happened Gartner published a bombshell report on July 1, 2026: $234 billion in enterprise application software spending is exposed to what they call \"agentic arbitrage\" between now and 2030 \u2014 rou...",
+          "source": "https://www.gartner.com/en/newsroom/press-releases/2026-07-01-gartner-says-us-dollars-234-billion-in-enterprise-application-software-spend-is-at-risk-from-agentic-artificial-intelligence",
+          "date": "2026-07-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "Gartner says $234B in enterprise SaaS spend is exposed to 'agentic arbitrage' \u2014 AI agents that bypass software interfaces entirely. When the analysts say the SaaS business model is metamorphosing, every product leader needs a plan.",
           "rating": null,
-          "source": null,
-          "body_preview": "HP Launches OpenAI Frontier Partnership \u2014 Enterprise-Wide AI Deployment\n\nWhat Happened\n\nHP Inc. announced a strategic partnership with OpenAI to deploy the Frontier platform across its global operations in 180+ countries. HP is one of the first large enterprises to adopt Frontier at scale following...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0900-applied-ai-brief-aws-1b-fde-unit.md",
-          "name": "2026-06-20_0900-applied-ai-brief-aws-1b-fde-unit.md",
-          "path": "Inbox/2026-06-20_0900-applied-ai-brief-aws-1b-fde-unit.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-11_0600-applied-ai-brief-ai-class-divide.md",
+          "rel_path": "Inbox/2026-07-11_0600-applied-ai-brief-ai-class-divide.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "AI's New Class Divide: Haves, Have-Nots, and Know-Nots",
+          "preview": "Source: Axios (July 10, 2026) \u2014 Zachary Basu What Happened Axios published a deep examination of AI's emerging class divide, based on Pew data, expert interviews, and the history of technology adoptio...",
+          "source": "https://www.axios.com/2026/07/10/ai-class-divide-fable-sol-mythos",
+          "date": "2026-07-11",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "adoption-gap"
+          ],
+          "suggested_angle": "AI is creating a class divide \u2014 16% of Americans expect it to benefit society. Your product's AI adoption problem isn't technical. It's permission.",
           "rating": null,
-          "source": null,
-          "body_preview": "AWS Invests $1B in Forward Deployed Engineering Unit\n\nWhat Happened\n\nAmazon Web Services announced a $1 billion investment in a new Forward Deployed Engineering (FDE) unit. The organization will embed thousands of AWS engineers directly inside enterprise customers' teams, deploying in pods of 5-6...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0831-applied-ai-brief-jio-call-agent.md",
-          "name": "2026-06-20_0831-applied-ai-brief-jio-call-agent.md",
-          "path": "Inbox/2026-06-20_0831-applied-ai-brief-jio-call-agent.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0910-applied-ai-brief-adobe-cannes-agentic-infrastructure.md",
+          "rel_path": "Inbox/2026-06-20_0910-applied-ai-brief-adobe-cannes-agentic-infrastructure.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Adobe at Cannes Lions 2026 \u2014 \"Agentic Infrastructure Layer\" with Accenture, WPP, Omnicom, Anthropic, Microsoft",
+          "preview": "What Happened At Cannes Lions (June 22-26), Adobe announced CX Enterprise partnerships with Accenture Song, Omnicom, Stagwell's Code and Theory, WPP, Anthropic, and Microsoft to deploy agentic AI at s...",
+          "source": "https://news.adobe.com/news/2026/06/adobe-accelerates-agentic-ai-adoption",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail"
+          ],
+          "suggested_angle": "Adobe is no longer selling software \u2014 it's positioning as 'the agentic infrastructure layer' for the entire marketing stack. When the CX platform your retail business runs on becomes an agent orchestrator with Anthropic and Microsoft embedded, the game has changed.",
           "rating": null,
-          "source": null,
-          "body_preview": "Reliance Jio Call Agent \u2014 AI as a Native Telecom Feature for 500M Users\n\nWhat Happened\n\nAt Reliance Industries' 49th annual general meeting on June 19, chairman Akash Ambani announced Jio Call Agent, an AI assistant embedded directly into Jio's telecom network \u2014 not as a standalone app. By saying...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md",
-          "name": "2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md",
-          "path": "Inbox/2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0701-applied-ai-brief-nvidia-huang-manufacture-ai.md",
+          "rel_path": "Inbox/2026-06-20_0701-applied-ai-brief-nvidia-huang-manufacture-ai.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "NVIDIA CEO Jensen Huang: \"Insane\" to Use Less AI \u2014 100% of Engineers Use Cursor",
+          "preview": "What Happened At an all-hands meeting following record earnings, Jensen Huang responded to reports that some managers were telling employees to use less AI with a single word: \"Insane.\" He told all NV...",
+          "source": "https://larridin.com/solutions/ai-adoption-the-complete-enterprise-guide-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "leadership"
+          ],
+          "suggested_angle": "NVIDIA's CEO told employees 'use AI until it works, then help make it better' \u2014 and made 100% AI adoption a non-negotiable. The most important hardware company in AI just became the most instructive case study in AI leadership.",
           "rating": null,
-          "source": null,
-          "body_preview": "AWS Summit New York 2026: The Agent Infrastructure Layer Arrives\n\nWhat Happened\n\nAWS Summit New York (June 17, Javits Center) was the company's most agentic AI-focused event ever. VP of Agentic AI Swami Sivasubramanian keynote set the tone: \"AI is starting to do the work, not just augmenting...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md",
-          "name": "2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md",
-          "path": "Inbox/2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-29_0701-applied-ai-brief-salesforce-agentic-customer-service-roi.md",
+          "rel_path": "Inbox/2026-06-29_0701-applied-ai-brief-salesforce-agentic-customer-service-roi.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Customer Service AI Agents: 66% Adoption, 70% See Returns Within 60 Days",
+          "preview": "What Happened Salesforce surveyed 3,000+ service professionals and found agentic AI adoption in customer service has jumped from 39% to 66% in the past year \u2014 with 70% of organizations reporting measu...",
+          "source": "https://www.marketingprofs.com/opinions/2026/55130/ai-update-june-26-2026-ai-news-and-views-from-the-past-week",
+          "date": "2026-06-29",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "66% of customer service teams now use AI agents \u2014 and 70% see measurable returns within 60 days. The production AI deployment question has been answered in the highest-contact function.",
           "rating": null,
-          "source": null,
-          "body_preview": "The 49-Point Gap: AI Agent Adoption Data That Changes How You Build\n\nWhat Happened\n\nNew aggregate data from Gartner, S&P Global, and Forrester paints a stark picture of enterprise AI agent adoption as of Q1 2026:\n\n- 80% of enterprise applications shipped or updated embed at least one AI agent...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md",
-          "name": "2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md",
-          "path": "Inbox/2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-06-20_0736-applied-ai-brief-shopify-ucp-agentic-commerce.md",
+          "rel_path": "Inbox/2026-06-20_0736-applied-ai-brief-shopify-ucp-agentic-commerce.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Shopify Spring '26 Edition \u2014 Universal Commerce Protocol Goes Self-Serve",
+          "preview": "What Happened On June 17, Shopify shipped its Spring '26 Edition, headlined by the Universal Commerce Protocol (UCP) going fully self-serve \u2014 no approval gate required. Any developer can now register ...",
+          "source": "https://www.shopify.com/news/spring-26-edition-dev",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai",
+            "retail"
+          ],
+          "suggested_angle": "Shopify just opened its entire commerce protocol to every AI agent. Every retailer, including Diamond, needs to decide if they want to be found by AI shopping agents or invisible to the next wave of commerce.",
           "rating": null,
-          "source": null,
-          "body_preview": "Claude Fable 5: Shutdown, Restoration, and the Amazon Conflict of Interest\n\nWhat Happened\n\nAnthropic restored Claude Fable 5 on Thursday, June 18 \u2014 ending a six-day government-forced shutdown that began June 12. The trigger: Amazon researchers jailbroke Fable 5 to extract cyberattack-relevant...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0800-applied-ai-brief-spacex-cursor-acquisition.md",
-          "name": "2026-06-20_0800-applied-ai-brief-spacex-cursor-acquisition.md",
-          "path": "Inbox/2026-06-20_0800-applied-ai-brief-spacex-cursor-acquisition.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-20_0701-applied-ai-brief-arcade-secure-action-layer.md",
+          "rel_path": "Inbox/2026-07-20_0701-applied-ai-brief-arcade-secure-action-layer.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Arcade.dev Raises $60M Series A \u2014 Secure Action Layer for Production AI Agents",
+          "preview": "What Happened Arcade.dev raised a $60M Series A led by SYN Ventures (total raised: $72M) to become \"the secure action layer behind every production AI agent.\" The company solves one narrow but critica...",
+          "source": "https://solutionsreview.com/ai-news-for-the-week-of-june-19-updates-from-arcade-ibm-neubird-ai-more",
+          "date": "2026-07-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "AI agents need a 'secure action layer' in production \u2014 Arcade just raised $60M to be exactly that. The agent infrastructure market is maturing from 'can we build agents' to 'how do we govern what they do.'",
           "rating": null,
-          "source": null,
-          "body_preview": "SpaceX Acquires Cursor (Anysphere) for $60B \u2014 AI-Native Dev Tools Become Strategic Assets\n\nWhat Happened\n\nOn June 16, SpaceX acquired Anysphere, the maker of Cursor, for ~$60 billion in an all-stock deal. Cursor processes ~150 million lines of enterprise code per day and is used by roughly...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Inbox/2026-06-20_0737-applied-ai-brief-nvidia-retail-survey-2026.md",
-          "name": "2026-06-20_0737-applied-ai-brief-nvidia-retail-survey-2026.md",
-          "path": "Inbox/2026-06-20_0737-applied-ai-brief-nvidia-retail-survey-2026.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
+          "filename": "2026-07-27_0700-applied-ai-brief-kimi-k3-open-weights.md",
+          "rel_path": "Inbox/2026-07-27_0700-applied-ai-brief-kimi-k3-open-weights.md",
+          "stage": "Capture",
+          "stage_label": "Inbox",
+          "title": "Kimi K3 Open Weights Go Live \u2014 Largest Open-Weight Release in History",
+          "preview": "What Happened Moonshot AI released the full open weights of Kimi K3, a 2.8-trillion-parameter model, at 00:00 UTC on July 27 \u2014 the largest open-weight release in history. The weights are 1.4 TB using ...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-july-27-2026",
+          "date": "2026-07-27",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "applied-ai"
+          ],
+          "suggested_angle": "The strongest open agent model is now free. Kimi K3 shows that the open-weight ceiling for agentic AI just moved \u2014 and enterprises building on open models need to rethink their deployment stack.",
           "rating": null,
-          "source": null,
-          "body_preview": "NVIDIA State of AI in Retail & CPG 2026 \u2014 89% Report Revenue Growth, Open Source Becomes the Battleground\n\nWhat Happened\n\nNVIDIA released its third annual State of AI in Retail and CPG survey, polling hundreds of retail and consumer packaged goods organizations. The headline numbers are striking,...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0736-applied-ai-brief-shopify-ucp-agentic-commerce.md",
-          "name": "2026-06-20_0736-applied-ai-brief-shopify-ucp-agentic-commerce.md",
-          "path": "Inbox/2026-06-20_0736-applied-ai-brief-shopify-ucp-agentic-commerce.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Shopify Spring '26 Edition \u2014 Universal Commerce Protocol Goes Self-Serve\n\nWhat Happened\n\nOn June 17, Shopify shipped its Spring '26 Edition, headlined by the Universal Commerce Protocol (UCP) going fully self-serve \u2014 no approval gate required. Any developer can now register an agent profile in the...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0735-applied-ai-brief-eu-retail-ai-opportunity.md",
-          "name": "2026-06-20_0735-applied-ai-brief-eu-retail-ai-opportunity.md",
-          "path": "Inbox/2026-06-20_0735-applied-ai-brief-eu-retail-ai-opportunity.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "European Retail AI Opportunity \u2014 McKinsey/EuroCommerce Report\n\nWhat Happened\n\nMcKinsey & Company and EuroCommerce published Rewiring Retail in Europe: The AI Imperative, quantifying a \u20ac240\u2013320 billion AI opportunity in European retail over five years. The report surveyed 36 retail executives and...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0733-applied-ai-brief-meta-ai-ad-ecosystem.md",
-          "name": "2026-06-20_0733-applied-ai-brief-meta-ai-ad-ecosystem.md",
-          "path": "Inbox/2026-06-20_0733-applied-ai-brief-meta-ai-ad-ecosystem.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Meta Launches Complete AI-Powered Ad Ecosystem at Cannes Lions 2026\n\nWhat Happened\n\nAt Cannes Lions 2026, Meta unveiled an end-to-end AI creative ad ecosystem that goes far beyond smart targeting. The new system:\n\n- Brand-aware creative generation \u2014 AI learns a brand's identity and tone from...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md",
-          "name": "2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md",
-          "path": "Inbox/2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Contentstack Launches AXP \u2014 88% of Leaders Say They Should've Fixed Data First\n\nWhat Happened\n\nContentstack launched its Agentic Experience Platform (AXP) \u2014 combining Content Cloud (brand governance), Data Cloud (real-time customer data via Lytics CDP), and Agent OS (autonomous agent...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md",
-          "name": "2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md",
-          "path": "Inbox/2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Sabre Scales Agentic AI Deployment in Travel Loyalty\n\nWhat Happened\n\nSabre Corporation announced a landmark production deployment of agentic AI with Ultra Group (now Linex Travel, part of Linex Loyalty). They've implemented Sabre's MCP (Model Context Protocol) server to bring agentic AI into global...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md",
-          "name": "2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md",
-          "path": "Inbox/2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Publicis Sapient Report: The AI Adoption Mirage \u2014 73% Using, 10% Transformed\n\nWhat happened: Publicis Sapient released its 2026 Enterprise AI Readiness report at VivaTech Paris (June 17), surveying 1,550 AI decision-makers across six markets. The headline: 73% of enterprises say they use AI...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md",
-          "name": "2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md",
-          "path": "Inbox/2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Morgan Stanley Opens Wealth Platforms to AI Agents via MCP\n\nWhat Happened\n\nMorgan Stanley announced it will let AI agents from corporate clients query its equity compensation platforms \u2014 ShareWorks and Equity Edge \u2014 directly through MCP (Model Context Protocol). The bank plans to roll out agent...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md",
-          "name": "2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md",
-          "path": "Inbox/2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Microsoft Copilot Cowork Goes GA \u2014 Agentic AI Hits the Enterprise Mainstream\n\nWhat happened: On June 16, Microsoft flipped the switch on Copilot Cowork, moving it from a three-month Frontier preview to worldwide general availability. Cowork is Microsoft 365's agentic AI layer \u2014 it runs multi-step...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0730-applied-ai-brief-bcg-agentic-retail-futures.md",
-          "name": "2026-06-20_0730-applied-ai-brief-bcg-agentic-retail-futures.md",
-          "path": "Inbox/2026-06-20_0730-applied-ai-brief-bcg-agentic-retail-futures.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "BCG: Four Agentic AI Futures for Retail \u2014 Same Infrastructure Bet in All\n\nSource: BCG / Agentic Landmark (April 2026, re-surfaced as June analysis)\n\nWhat Happened\n\nBCG published a scenario analysis on how AI agents will reshape retail commerce, mapping four possible futures based on two variables:...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0702-applied-ai-brief-openai-astral-acquisition.md",
-          "name": "2026-06-20_0702-applied-ai-brief-openai-astral-acquisition.md",
-          "path": "Inbox/2026-06-20_0702-applied-ai-brief-openai-astral-acquisition.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "OpenAI Acquires Astral \u2014 Platform Consolidation Accelerates\n\nWhat Happened\n\nOpenAI acquired Astral, the company behind Rye (Python package management) and a major force in the Python tooling ecosystem. The deal brings Astral's team and technology in-house, giving OpenAI deeper control over the...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0701-applied-ai-brief-nvidia-huang-manufacture-ai.md",
-          "name": "2026-06-20_0701-applied-ai-brief-nvidia-huang-manufacture-ai.md",
-          "path": "Inbox/2026-06-20_0701-applied-ai-brief-nvidia-huang-manufacture-ai.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "NVIDIA CEO Jensen Huang: \"Insane\" to Use Less AI \u2014 100% of Engineers Use Cursor\n\nWhat Happened\n\nAt an all-hands meeting following record earnings, Jensen Huang responded to reports that some managers were telling employees to use less AI with a single word: \"Insane.\" He told all NVIDIA employees he...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0701-applied-ai-brief-korea-claude-wave.md",
-          "name": "2026-06-20_0701-applied-ai-brief-korea-claude-wave.md",
-          "path": "Inbox/2026-06-20_0701-applied-ai-brief-korea-claude-wave.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Korea Wave: NAVER, Samsung SDS, LG CNS, Nexon, Hanwha All Deploy Claude Enterprise-Wide\n\nWhat Happened\n\nOn June 18-19, a wave of Korean conglomerates announced simultaneous enterprise-wide Claude deployments:\n\n- NAVER (Korea's largest web portal and cloud provider) deployed Claude Code across its...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0700-applied-ai-brief-writer-adoption-survey.md",
-          "name": "2026-06-20_0700-applied-ai-brief-writer-adoption-survey.md",
-          "path": "Inbox/2026-06-20_0700-applied-ai-brief-writer-adoption-survey.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Writer 2026 Enterprise AI Survey: 54% of C-Suite Say AI Is Tearing Their Company Apart\n\nWhat Happened\n\nWriter.com released its 2026 Enterprise AI Adoption survey (2,400 respondents, 1,200 executives + 1,200 employees, conducted with Workplace Intelligence). The data reveals AI adoption is scaling...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0700-applied-ai-brief-shazeer-openai.md",
-          "name": "2026-06-20_0700-applied-ai-brief-shazeer-openai.md",
-          "path": "Inbox/2026-06-20_0700-applied-ai-brief-shazeer-openai.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Noam Shazeer Leaves Google for OpenAI \u2014 The $2.7B Talent Signal\n\nWhat Happened\n\nNoam Shazeer \u2014 co-author of the Transformer paper (\"Attention Is All You Need\"), co-lead of Gemini at Google, and designer of Multi-Query Attention (the engineering primitive behind every major LLM) \u2014 posted his...",
-          "is_template": false
-        },
-        {
-          "filename": "Inbox/2026-06-20_0700-applied-ai-brief-agent-governance-gap.md",
-          "name": "2026-06-20_0700-applied-ai-brief-agent-governance-gap.md",
-          "path": "Inbox/2026-06-20_0700-applied-ai-brief-agent-governance-gap.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "The 1,600-Agent Enterprise: AI Agent Governance Gap Hits Critical Mass\n\nWhat Happened\n\nTwo major data releases this month paint the same picture: enterprises are deploying AI agents faster than they can govern them.\n\nIBM Think 2026 \u2014 IBM's latest enterprise survey projects that most large...",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         }
-      ],
-      "templates": [],
-      "bottleneck": true
+      ]
     },
-    {
-      "id": "incubating",
-      "name": "INCUBATING",
-      "dir": "Incubating",
-      "icon": "\ud83e\udd5a",
-      "count": 0,
-      "empty": true,
-      "files": [],
-      "templates": [],
-      "bottleneck": false
-    },
-    {
-      "id": "challenged",
-      "name": "CHALLENGED",
-      "dir": "Challenged",
-      "icon": "\u2694\ufe0f",
-      "count": 0,
-      "empty": true,
-      "files": [],
-      "templates": [
+    "Incubate": {
+      "label": "Incubating",
+      "count": 15,
+      "files": [
         {
-          "filename": "Challenged/_TEMPLATE_Challenge.md",
-          "name": "_TEMPLATE_Challenge.md",
-          "path": "Challenged/_TEMPLATE_Challenge.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Challenge Template \u2014 6-Lens Gauntlet\n\nSource Idea: \nDate Challenged: \nVerdict: Advance | Shelve | Needs More Time\n\n---\n\nLens 1: Counterargument\nWhat's the strongest case against this? Who would disagree and why?\n\n> \n\nLens 2: Truth Check\nIs this actually true, or does it just feel true? Can I point...",
-          "is_template": true
+          "filename": "2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md",
+          "rel_path": "Incubating/2026-06-20_0731-applied-ai-brief-sabre-agentic-ai-travel.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Sabre Scales Agentic AI Deployment in Travel Loyalty",
+          "preview": "What Happened Sabre Corporation announced a landmark production deployment of agentic AI with Ultra Group (now Linex Travel, part of Linex Loyalty). They've implemented Sabre's MCP (Model Context Prot...",
+          "source": "https://www.prnewswire.com/news-releases/sabre-scales-agentic-ai-deployment-as-ultra-group-expands-globally-under-linex-302803108.html",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "retail-ai",
+            "diamond",
+            "bold-ai"
+          ],
+          "suggested_angle": "Agentic AI isn't coming to travel and loyalty \u2014 it just arrived. Sabre's MCP deployment is a case study in production-grade AI.",
+          "rating": 5,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md",
+          "rel_path": "Incubating/2026-06-23_0701-applied-ai-brief-chatgpt-market-share-shift.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "ChatGPT Drops Below 50% Market Share \u2014 GPT-5.6 Imminent",
+          "preview": "What Happened Sensor Tower's 2026 State of AI Report shows ChatGPT at 46.4% market share (1.1B monthly users) \u2014 the first time it's fallen below 50%. Google Gemini holds 27.7% (662M users), Claude hol...",
+          "source": "https://unrot.co/blogs/ai-news-today-june-21-2026",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "observation",
+            "market-shift"
+          ],
+          "suggested_angle": "ChatGPT fell below 50% market share. The AI assistant is becoming a commodity. The value is moving upstream.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md",
+          "rel_path": "Incubating/2026-06-20_0732-applied-ai-brief-contentstack-ia-before-ai.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Contentstack Launches AXP \u2014 88% of Leaders Say They Should've Fixed Data First",
+          "preview": "What Happened Contentstack launched its Agentic Experience Platform (AXP) \u2014 combining Content Cloud (brand governance), Data Cloud (real-time customer data via Lytics CDP), and Agent OS (autonomous ag...",
+          "source": "https://agilebrandguide.com/marketing-technology-ai-news-june-10-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "product-leadership",
+            "framework"
+          ],
+          "suggested_angle": "88% of enterprise leaders wish they'd fixed their data architecture before deploying AI. The lesson for every product leader.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md",
+          "rel_path": "Incubating/2026-06-20_0820-applied-ai-brief-claude-fable5-shutdown.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Claude Fable 5: Shutdown, Restoration, and the Amazon Conflict of Interest",
+          "preview": "What Happened Anthropic restored Claude Fable 5 on Thursday, June 18 \u2014 ending a six-day government-forced shutdown that began June 12. The trigger: Amazon researchers jailbroke Fable 5 to extract cybe...",
+          "source": "https://aiinsiders.net/article/amazon-research-triggered-a-federal-shutdown-of-anthropics",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai",
+            "insight"
+          ],
+          "suggested_angle": "Your AI supply chain just became a geopolitical risk. What Claude Fable 5's shutdown-and-restoration saga means for every product leader.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md",
+          "rel_path": "Incubating/2026-06-20_0830-applied-ai-brief-aws-summit-agent-infrastructure.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "AWS Summit New York 2026: The Agent Infrastructure Layer Arrives",
+          "preview": "What Happened AWS Summit New York (June 17, Javits Center) was the company's most agentic AI-focused event ever. VP of Agentic AI Swami Sivasubramanian keynote set the tone: \"AI is starting to do the ...",
+          "source": "https://aws.amazon.com/blogs/aws/top-announcements-of-the-aws-summit-in-new-york-2026",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai"
+          ],
+          "suggested_angle": "AWS just became the operating system for enterprise AI agents. What AWS Context, DevOps Agent, and Continuum tell us about where agentic AI is heading.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-27_0600-openai-jalapeno-inference-chip.md",
+          "rel_path": "Incubating/2026-06-27_0600-openai-jalapeno-inference-chip.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "OpenAI Jalape\u00f1o Chip \u2014 First Custom Inference Silicon",
+          "preview": "What Happened OpenAI unveiled \"Jalape\u00f1o,\" its first custom AI inference chip, on June 25 \u2014 developed in partnership with Broadcom (silicon & networking), TSMC (manufacturing), and Celestica (integrati...",
+          "source": "https://unrot.co/blogs/today-top-10-ai-news-june-26-2026",
+          "date": "2026-06-27",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "observation"
+          ],
+          "suggested_angle": "OpenAI built its own chip in 9 months using its own models. The models race is over \u2014 the infrastructure race is where product leadership is won.",
+          "rating": 3,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-27_0602-anthropic-alibaba-distillation-attack.md",
+          "rel_path": "Incubating/2026-06-27_0602-anthropic-alibaba-distillation-attack.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Anthropic Accuses Alibaba of the Largest Known AI Distillation Attack \u2014 28.8M Exchanges",
+          "preview": "What Happened Anthropic sent a letter to the Senate Banking Committee (June 10, made public June 25) formally accusing Alibaba of running 28.8 million fraudulent queries against Claude between April 2...",
+          "source": "https://unrot.co/blogs/today-top-10-ai-news-june-26-2026",
+          "date": "2026-06-27",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "observation"
+          ],
+          "suggested_angle": "Alibaba stole from Claude 28.8 million times. Your AI product's IP moat doesn't come from the model \u2014 it comes from what the model can't replicate.",
+          "rating": 3,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md",
+          "rel_path": "Incubating/2026-06-20_0730-applied-ai-brief-morgan-stanley-mcp-agents.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Morgan Stanley Opens Wealth Platforms to AI Agents via MCP",
+          "preview": "What Happened Morgan Stanley announced it will let AI agents from corporate clients query its equity compensation platforms \u2014 ShareWorks and Equity Edge \u2014 directly through MCP (Model Context Protocol)...",
+          "source": "https://aiinsiders.net/article/morgan-stanley-opens-wealth-platforms-to-ai-agents-via-mcp",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai",
+            "framework"
+          ],
+          "suggested_angle": "The real AI moat isn't the model \u2014 it's what you know. Morgan Stanley just proved it.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-23_0700-applied-ai-brief-openai-deployment-company.md",
+          "rel_path": "Incubating/2026-06-23_0700-applied-ai-brief-openai-deployment-company.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "OpenAI Deployment Company \u2014 $4B+ to Solve the Deployment Gap",
+          "preview": "What Happened OpenAI launched a standalone business unit called the OpenAI Deployment Company, capitalised with over $4B from 19 investment firms (TPG lead, Bain Capital, Brookfield, Goldman Sachs, So...",
+          "source": "https://openai.com/index/openai-launches-the-deployment-company",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai",
+            "product-leadership",
+            "insight"
+          ],
+          "suggested_angle": "OpenAI just spent $4B on deployment, not models. The signal for every product leader building with AI.",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md",
+          "rel_path": "Incubating/2026-06-20_0731-applied-ai-brief-publicis-adoption-gap.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "",
+          "preview": "",
+          "source": "https://www.marketscale.com/industries/software-and-technology/publicis-sapients-2026-enterprise-ai-report-finds-wide-adoption-but-only-10-say-its-core-to-operations",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "org-design",
+            "observation"
+          ],
+          "suggested_angle": "73% of enterprises use AI. Only 10% say it's core to their business. The real bottleneck isn't the technology \u2014 it's organizational design.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-23_1520-change-management-digital-adoption-fear.md",
+          "rel_path": "Incubating/2026-06-23_1520-change-management-digital-adoption-fear.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "Change Management & Digital Adoption Fear",
+          "preview": "The challenge: most content about innovation assumes the audience is already bought in. The bigger, harder problem is the people who are intimidated, skeptical, or burned out by the pace of digital ch...",
+          "source": "conversation (Paul I)",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "product-leadership",
+            "org-design",
+            "framework",
+            "insight"
+          ],
+          "suggested_angle": "Most innovation content preaches to the converted. The real product challenge is change management \u2014 helping people intimidated by digital adoption actually want to adopt it.",
+          "rating": 5,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-27_0601-ai-pricing-era-ends.md",
+          "rel_path": "Incubating/2026-06-27_0601-ai-pricing-era-ends.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "The Era of Cheap AI Ends in 2026 \u2014 Across-the-Board Model Price Hikes",
+          "preview": "What Happened After 3+ years of steadily declining AI model prices (sometimes 10x drops in a single year), the trend has reversed. Every major model provider raised prices in Q2 2026: - GPT-5.5: rough...",
+          "source": "https://www.buildfastwithai.com/blogs/ai-news-today-june-26-2026",
+          "date": "2026-06-27",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "observation"
+          ],
+          "suggested_angle": "The era of cheap AI is over. GPT-5.5 doubled pricing, Gemini 3.5 Flash tripled it, Fable 5 doubled Opus. Every product leader needs to rewrite their unit economics.",
+          "rating": 3,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md",
+          "rel_path": "Incubating/2026-06-20_0821-applied-ai-brief-agent-adoption-gap.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "The 49-Point Gap: AI Agent Adoption Data That Changes How You Build",
+          "preview": "What Happened New aggregate data from Gartner, S&P Global, and Forrester paints a stark picture of enterprise AI agent adoption as of Q1 2026: - 80% of enterprise applications shipped or updated embed...",
+          "source": "https://www.digitalapplied.com/blog/ai-agent-adoption-2026-enterprise-data-points",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "product-leadership",
+            "framework"
+          ],
+          "suggested_angle": "80% of enterprise apps embed AI agents. 31% have one in production. The 49-point gap is where product leaders either win or get written off.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md",
+          "rel_path": "Incubating/2026-06-20_0730-applied-ai-brief-copilot-cowork-ga.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "",
+          "preview": "",
+          "source": "https://www.microsoft.com/en-us/microsoft-365/blog/2026/06/16/copilot-cowork-is-now-generally-available",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai"
+          ],
+          "suggested_angle": "Microsoft just shipped the 'AI does the work' future to every enterprise. Here's what it means for product leaders building agentic experiences.",
+          "rating": 4,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
+        },
+        {
+          "filename": "2026-06-20_0700-applied-ai-brief-agent-governance-gap.md",
+          "rel_path": "Incubating/2026-06-20_0700-applied-ai-brief-agent-governance-gap.md",
+          "stage": "Incubate",
+          "stage_label": "Incubating",
+          "title": "The 1,600-Agent Enterprise: AI Agent Governance Gap Hits Critical Mass",
+          "preview": "What Happened Two major data releases this month paint the same picture: enterprises are deploying AI agents faster than they can govern them. IBM Think 2026 \u2014 IBM's latest enterprise survey projects ...",
+          "source": "https://beam.ai/agentic-insights/ibm-says-enterprises-will-run-1600-ai-agents-by-year-end-70-cant-govern-the-ones-they-have",
+          "date": "2026-06-20",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "agent-governance",
+            "enterprise-ai",
+            "bold-ai",
+            "framework",
+            "insight"
+          ],
+          "suggested_angle": "Your enterprise will have 1,600 AI agents by December. You can govern exactly zero of them. The governance gap is the defining enterprise AI problem of late 2026.",
+          "rating": 5,
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
+          "is_template": false
         }
-      ],
-      "bottleneck": false
+      ]
     },
-    {
-      "id": "queue",
-      "name": "QUEUE",
-      "dir": "Queue",
-      "icon": "\ud83d\udccb",
+    "Challenge": {
+      "label": "Challenged",
+      "count": 5,
+      "files": [
+        {
+          "filename": "challenge-openai-deployment-company.md",
+          "rel_path": "Challenged/challenge-openai-deployment-company.md",
+          "stage": "Challenge",
+          "stage_label": "Challenged",
+          "title": "Challenge: OpenAI Deployment Company \u2014 $4B+ to Solve the Deployment Gap",
+          "preview": "Source Idea: 2026-06-230700-applied-ai-brief-openai-deployment-company.md Date Challenged: 2026-07-27 Verdict: Advance --- Lens 1: Counterargument (\u2705) The counterargument: OpenAI is spending $4B becau...",
+          "source": "https://openai.com/index/openai-launches-the-deployment-company",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai",
+            "product-leadership",
+            "insight"
+          ],
+          "suggested_angle": "The model is table stakes. Deployment is the moat.",
+          "rating": 5,
+          "challenge_date": "2026-07-27",
+          "gauntlet_score": "6/6",
+          "content_type": "SF",
+          "is_template": false
+        },
+        {
+          "filename": "challenge-sabre-agentic-ai-travel-loyalty.md",
+          "rel_path": "Challenged/challenge-sabre-agentic-ai-travel-loyalty.md",
+          "stage": "Challenge",
+          "stage_label": "Challenged",
+          "title": "Challenge: Sabre Scales Agentic AI Deployment in Travel Loyalty",
+          "preview": "Source Idea: 2026-06-200731-applied-ai-brief-sabre-agentic-ai-travel.md Date Challenged: 2026-07-27 Verdict: Advance --- Lens 1: Counterargument (\u2705) Loyalty programs are already accessible via APIs an...",
+          "source": "https://www.prnewswire.com/news-releases/sabre-scales-agentic-ai-deployment-as-ultra-group-expands-globally-under-linex-302803108.html",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "retail-ai",
+            "diamond",
+            "bold-ai"
+          ],
+          "suggested_angle": "Your loyalty program is about to be accessed by AI agents, not humans.",
+          "rating": 5,
+          "challenge_date": "2026-07-27",
+          "gauntlet_score": "6/6",
+          "content_type": "LF",
+          "is_template": false
+        },
+        {
+          "filename": "challenge-change-management-digital-adoption.md",
+          "rel_path": "Challenged/challenge-change-management-digital-adoption.md",
+          "stage": "Challenge",
+          "stage_label": "Challenged",
+          "title": "Challenge: Change Management & Digital Adoption Fear",
+          "preview": "Source Idea: 2026-06-231520-change-management-digital-adoption-fear.md Date Challenged: 2026-07-27 Verdict: Advance --- Lens 1: Counterargument (\u2705) The 'change management is a product skill' argument ...",
+          "source": "conversation (Paul I)",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "product-leadership",
+            "org-design",
+            "framework",
+            "insight"
+          ],
+          "suggested_angle": "The real product challenge is change management \u2014 helping people intimidated by digital adoption actually want to adopt it.",
+          "rating": 5,
+          "challenge_date": "2026-07-27",
+          "gauntlet_score": "6/6",
+          "content_type": "LF",
+          "is_template": false
+        },
+        {
+          "filename": "challenge-agent-governance-gap.md",
+          "rel_path": "Challenged/challenge-agent-governance-gap.md",
+          "stage": "Challenge",
+          "stage_label": "Challenged",
+          "title": "Challenge: The 1,600-Agent Enterprise: AI Agent Governance Gap Hits Critical Mass",
+          "preview": "Source Idea: 2026-06-200700-applied-ai-brief-agent-governance-gap.md Date Challenged: 2026-07-27 Verdict: Advance --- Lens 1: Counterargument (\u2705) Counterargument: The 1,600 number is IBM's projection,...",
+          "source": "https://beam.ai/agentic-insights/ibm-says-enterprises-will-run-1600-ai-agents-by-year-end-70-cant-govern-the-ones-they-have",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "agent-governance",
+            "enterprise-ai",
+            "bold-ai",
+            "framework",
+            "insight"
+          ],
+          "suggested_angle": "Your enterprise will have 1,600 AI agents by December. You can govern exactly zero of them.",
+          "rating": 5,
+          "challenge_date": "2026-07-27",
+          "gauntlet_score": "6/6",
+          "content_type": "LF",
+          "is_template": false
+        },
+        {
+          "filename": "challenge-morgan-stanley-mcp-agents.md",
+          "rel_path": "Challenged/challenge-morgan-stanley-mcp-agents.md",
+          "stage": "Challenge",
+          "stage_label": "Challenged",
+          "title": "Challenge: Morgan Stanley Opens Wealth Platforms to AI Agents via MCP",
+          "preview": "Source Idea: 2026-06-200730-applied-ai-brief-morgan-stanley-mcp-agents.md Date Challenged: 2026-07-27 Verdict: Advance --- Lens 1: Counterargument (\u2705) Counterargument: Morgan Stanley is a regulated ba...",
+          "source": "https://aiinsiders.net/article/morgan-stanley-opens-wealth-platforms-to-ai-agents-via-mcp",
+          "date": "2026-06-23",
+          "tags": [
+            "idea",
+            "ai-deployment",
+            "enterprise-ai",
+            "bold-ai",
+            "framework"
+          ],
+          "suggested_angle": "The real AI moat isn't the model \u2014 it's what you know. Morgan Stanley just proved it.",
+          "rating": 4,
+          "challenge_date": "2026-07-27",
+          "gauntlet_score": "6/6",
+          "content_type": "SF",
+          "is_template": false
+        }
+      ]
+    },
+    "Organize": {
+      "label": "Queue",
       "count": 7,
-      "empty": false,
       "files": [
         {
-          "filename": "Queue/_EXISTING_BACKLOG.md",
-          "name": "_EXISTING_BACKLOG.md",
-          "path": "Queue/_EXISTING_BACKLOG.md",
-          "date": null,
+          "filename": "2026-W26-queue-plan.md",
+          "rel_path": "Queue/2026-W26-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of June 21, 2026",
+          "preview": "Status: Pipeline priming \u2014 no challenged items available for scheduling Created: June 21, 2026 (Sunday 5:30 PM EST) --- Situation The Foundry pipeline is empty of ready-to-draft content. Zero items ha...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Existing Content \u2014 Published Backlog\n\nAll items below were created before The Foundry pipeline. They serve as the existing body of work and reference material for new content.\n\nContent Library v3\nFile: [[Paul/Thought Leadership/Content Library v3]]\nPieces: 22 long-form + corresponding...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W31-queue-plan.md",
-          "name": "2026-W31-queue-plan.md",
-          "path": "Queue/2026-W31-queue-plan.md",
-          "date": null,
+          "filename": "2026-W29-queue-plan.md",
+          "rel_path": "Queue/2026-W29-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of July 13, 2026 (W29)",
+          "preview": "Status: Pipeline stall \u2014 4th consecutive week, zero items have ever exited Inbox Created: July 12, 2026 (Sunday 5:30 PM EST) Pipeline state: Inbox 35 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Publish...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of July 27, 2026 (W31)\n\nStatus: Pipeline stall \u2014 6th consecutive week, zero items have ever exited Inbox\nCreated: July 26, 2026 (Sunday 5:30 PM EST)\nPipeline state: Inbox 47 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Published 0\n\n---\n\nOne Sentence\n\nSix weeks, 47 items...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W30-queue-plan.md",
-          "name": "2026-W30-queue-plan.md",
-          "path": "Queue/2026-W30-queue-plan.md",
-          "date": null,
+          "filename": "2026-W30-queue-plan.md",
+          "rel_path": "Queue/2026-W30-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of July 20, 2026 (W30)",
+          "preview": "Status: Pipeline stall \u2014 5th consecutive week, zero items have ever exited Inbox Created: July 19, 2026 (Sunday 5:30 PM EST) Pipeline state: Inbox 42 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Publish...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of July 20, 2026 (W30)\n\nStatus: Pipeline stall \u2014 5th consecutive week, zero items have ever exited Inbox\nCreated: July 19, 2026 (Sunday 5:30 PM EST)\nPipeline state: Inbox 42 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Published 0\n\n---\n\nOne Sentence\n\nThe Inbox has grown from...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W29-queue-plan.md",
-          "name": "2026-W29-queue-plan.md",
-          "path": "Queue/2026-W29-queue-plan.md",
-          "date": null,
+          "filename": "2026-W27-queue-plan.md",
+          "rel_path": "Queue/2026-W27-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of June 28, 2026",
+          "preview": "Status: Pipeline priming week \u2014 0 challenged items available for scheduling Created: June 28, 2026 (Sunday 5:30 PM EST) Pipeline state: Inbox 18 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Queue 0 --- Situation T...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of July 13, 2026 (W29)\n\nStatus: Pipeline stall \u2014 4th consecutive week, zero items have ever exited Inbox\nCreated: July 12, 2026 (Sunday 5:30 PM EST)\nPipeline state: Inbox 35 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Published 0\n\n---\n\nOne Sentence\n\nThe Inbox has grown to 35...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W28-queue-plan.md",
-          "name": "2026-W28-queue-plan.md",
-          "path": "Queue/2026-W28-queue-plan.md",
-          "date": null,
+          "filename": "2026-W31-queue-plan.md",
+          "rel_path": "Queue/2026-W31-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of July 27, 2026 (W31)",
+          "preview": "Status: Pipeline stall \u2014 6th consecutive week, zero items have ever exited Inbox Created: July 26, 2026 (Sunday 5:30 PM EST) Pipeline state: Inbox 47 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Drafts 0 \u2192 Publish...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of July 6, 2026 (W28)\n\nStatus: Pipeline stall \u2014 3rd consecutive week with 0 challenged items\nCreated: July 5, 2026 (Sunday 5:30 PM EST)\nPipeline state: Inbox 26 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Queue 0\n\n---\n\nSituation \u2014 The Inbox Is Now a Liability\n\nThree weeks ago, the...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W27-queue-plan.md",
-          "name": "2026-W27-queue-plan.md",
-          "path": "Queue/2026-W27-queue-plan.md",
-          "date": null,
+          "filename": "_EXISTING_BACKLOG.md",
+          "rel_path": "Queue/_EXISTING_BACKLOG.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Existing Content \u2014 Published Backlog",
+          "preview": "All items below were created before The Foundry pipeline. They serve as the existing body of work and reference material for new content. Content Library v3 File: Paul/Thought Leadership/Content Libra...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of June 28, 2026\n\nStatus: Pipeline priming week \u2014 0 challenged items available for scheduling\nCreated: June 28, 2026 (Sunday 5:30 PM EST)\nPipeline state: Inbox 18 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Queue 0\n\n---\n\nSituation\n\nThe pipeline is dry below Inbox. Zero items have been...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         },
         {
-          "filename": "Queue/2026-W26-queue-plan.md",
-          "name": "2026-W26-queue-plan.md",
-          "path": "Queue/2026-W26-queue-plan.md",
-          "date": null,
+          "filename": "2026-W28-queue-plan.md",
+          "rel_path": "Queue/2026-W28-queue-plan.md",
+          "stage": "Organize",
+          "stage_label": "Queue",
+          "title": "Weekly Queue Plan \u2014 Week of July 6, 2026 (W28)",
+          "preview": "Status: Pipeline stall \u2014 3rd consecutive week with 0 challenged items Created: July 5, 2026 (Sunday 5:30 PM EST) Pipeline state: Inbox 26 \u2192 Incubating 0 \u2192 Challenged 0 \u2192 Queue 0 --- Situation \u2014 The In...",
+          "source": "",
+          "date": "",
           "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Weekly Queue Plan \u2014 Week of June 21, 2026\n\nStatus: Pipeline priming \u2014 no challenged items available for scheduling\nCreated: June 21, 2026 (Sunday 5:30 PM EST)\n\n---\n\nSituation\n\nThe Foundry pipeline is empty of ready-to-draft content. Zero items have passed the Challenge stage. This week's focus is...",
+          "suggested_angle": "",
+          "rating": "",
+          "challenge_date": "",
+          "gauntlet_score": "",
+          "content_type": "",
           "is_template": false
         }
-      ],
-      "templates": [],
-      "bottleneck": true
+      ]
     },
-    {
-      "id": "drafts",
-      "name": "DRAFTS",
-      "dir": "Drafts",
-      "icon": "\u270d\ufe0f",
+    "Draft": {
+      "label": "Drafts",
       "count": 0,
-      "empty": true,
-      "files": [],
-      "templates": [
-        {
-          "filename": "Drafts/LF/_TEMPLATE_LF.md",
-          "name": "_TEMPLATE_LF.md",
-          "path": "Drafts/LF/_TEMPLATE_LF.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "LF Template \u2014 Long-Form\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nCreated: {{date}}\nPublished: \n\n---\n\nHook\n\n<!-- First 2-3 lines. Lead with a claim or a stake, not a setup. No warm-up. -->\n\nBuild-up\n\n<!-- Tension within first 5 lines. What's at stake? One idea per paragraph....",
-          "is_template": true
-        },
-        {
-          "filename": "Drafts/SF/_TEMPLATE_SF.md",
-          "name": "_TEMPLATE_SF.md",
-          "path": "Drafts/SF/_TEMPLATE_SF.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "SF Template \u2014 Short-Form\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: LinkedIn | Twitter | Both\nCreated: {{date}}\nPublished: \n\n---\n\nHook\n\n<!-- First sentence IS the post. Claim or stake. No warm-up. -->\n\n\nBody\n\n<!-- 3-5 lines. One idea. White space. -->\n\n\nCloser\n\n<!--...",
-          "is_template": true
-        },
-        {
-          "filename": "Drafts/Thread/_TEMPLATE_Thread.md",
-          "name": "_TEMPLATE_Thread.md",
-          "path": "Drafts/Thread/_TEMPLATE_Thread.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Thread Template\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: Twitter | LinkedIn Carousel\nCreated: {{date}}\nPublished: \n\n---\n\nThread Core\n<!-- What's the one through-line? -->\n\nTweet 1 \u2014 Hook\n<!-- The post everyone sees. Must work standalone. -->\n\n---\n\nTweet 2 \u2014 Build\n<!--...",
-          "is_template": true
-        },
-        {
-          "filename": "Drafts/Bridge/_TEMPLATE_Bridge.md",
-          "name": "_TEMPLATE_Bridge.md",
-          "path": "Drafts/Bridge/_TEMPLATE_Bridge.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Bridge Template \u2014 Short \u2192 Long\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nLinks to: \nCreated: {{date}}\nPublished: \n\n---\n\nShort-Form Teaser\n<!-- Must work as a standalone insight. The link to long-form is a bonus, not the point. -->\n\n---\n\nThe Link\n<!-- \"I wrote about why [X]...",
-          "is_template": true
-        },
-        {
-          "filename": "Drafts/Visual/_TEMPLATE_Visual.md",
-          "name": "_TEMPLATE_Visual.md",
-          "path": "Drafts/Visual/_TEMPLATE_Visual.md",
-          "date": null,
-          "tags": [],
-          "suggested_angle": null,
-          "rating": null,
-          "source": null,
-          "body_preview": "Visual Template \u2014 Carousel / Diagram / Infographic\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: LinkedIn | Instagram (future) | Twitter\nCreated: {{date}}\nPublished: \n\n---\n\nConcept\n<!-- What's the framework, diagram, or information being visualized? -->\n\nSlide...",
-          "is_template": true
-        }
-      ],
-      "bottleneck": false
+      "files": []
     },
-    {
-      "id": "polished",
-      "name": "POLISHED",
-      "dir": "Polished",
-      "icon": "\u2728",
+    "Polish": {
+      "label": "Polished",
       "count": 0,
-      "empty": true,
-      "files": [],
-      "templates": [],
-      "bottleneck": false
+      "files": []
     },
-    {
-      "id": "archive",
-      "name": "ARCHIVE",
-      "dir": "Archive",
-      "icon": "\ud83d\uddc4\ufe0f",
+    "Archive": {
+      "label": "Cold Storage",
       "count": 0,
-      "empty": true,
-      "files": [],
-      "templates": [],
-      "bottleneck": false
+      "files": []
     }
-  ],
+  },
   "templates": [
     {
-      "filename": "Challenged/_TEMPLATE_Challenge.md",
-      "name": "_TEMPLATE_Challenge.md",
-      "path": "Challenged/_TEMPLATE_Challenge.md",
-      "date": null,
+      "filename": "_TEMPLATE_Challenge.md",
+      "rel_path": "Challenged/_TEMPLATE_Challenge.md",
+      "stage": "Challenge",
+      "stage_label": "Challenged",
+      "title": "Challenge Template \u2014 6-Lens Gauntlet",
+      "preview": "Source Idea: Date Challenged: Verdict: Advance Shelve Needs More Time --- Lens 1: Counterargument What's the strongest case against this? Who would disagree and why? Lens 2: Truth Check Is this actual...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "Challenge Template \u2014 6-Lens Gauntlet\n\nSource Idea: \nDate Challenged: \nVerdict: Advance | Shelve | Needs More Time\n\n---\n\nLens 1: Counterargument\nWhat's the strongest case against this? Who would disagree and why?\n\n> \n\nLens 2: Truth Check\nIs this actually true, or does it just feel true? Can I point...",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     },
     {
-      "filename": "Drafts/Bridge/_TEMPLATE_Bridge.md",
-      "name": "_TEMPLATE_Bridge.md",
-      "path": "Drafts/Bridge/_TEMPLATE_Bridge.md",
-      "date": null,
+      "filename": "_TEMPLATE_LF.md",
+      "rel_path": "Drafts/LF/_TEMPLATE_LF.md",
+      "stage": "Draft",
+      "stage_label": "Drafts",
+      "title": "LF Template \u2014 Long-Form",
+      "preview": "Status: Draft Polished Published Pillar: Source Ideas: Created: {{date}} Published: --- Hook <!-- First 2-3 lines. Lead with a claim or a stake, not a setup. No warm-up. -- Build-up <!-- Tension withi...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "Bridge Template \u2014 Short \u2192 Long\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nLinks to: \nCreated: {{date}}\nPublished: \n\n---\n\nShort-Form Teaser\n<!-- Must work as a standalone insight. The link to long-form is a bonus, not the point. -->\n\n---\n\nThe Link\n<!-- \"I wrote about why [X]...",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     },
     {
-      "filename": "Drafts/LF/_TEMPLATE_LF.md",
-      "name": "_TEMPLATE_LF.md",
-      "path": "Drafts/LF/_TEMPLATE_LF.md",
-      "date": null,
+      "filename": "_TEMPLATE_SF.md",
+      "rel_path": "Drafts/SF/_TEMPLATE_SF.md",
+      "stage": "Draft",
+      "stage_label": "Drafts",
+      "title": "SF Template \u2014 Short-Form",
+      "preview": "Status: Draft Polished Published Pillar: Source Ideas: Channel: LinkedIn Twitter Both Created: {{date}} Published: --- Hook <!-- First sentence IS the post. Claim or stake. No warm-up. -- Body <!-- 3-...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "LF Template \u2014 Long-Form\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nCreated: {{date}}\nPublished: \n\n---\n\nHook\n\n<!-- First 2-3 lines. Lead with a claim or a stake, not a setup. No warm-up. -->\n\nBuild-up\n\n<!-- Tension within first 5 lines. What's at stake? One idea per paragraph....",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     },
     {
-      "filename": "Drafts/SF/_TEMPLATE_SF.md",
-      "name": "_TEMPLATE_SF.md",
-      "path": "Drafts/SF/_TEMPLATE_SF.md",
-      "date": null,
+      "filename": "_TEMPLATE_Thread.md",
+      "rel_path": "Drafts/Thread/_TEMPLATE_Thread.md",
+      "stage": "Draft",
+      "stage_label": "Drafts",
+      "title": "Thread Template",
+      "preview": "Status: Draft Polished Published Pillar: Source Ideas: Channel: Twitter LinkedIn Carousel Created: {{date}} Published: --- Thread Core <!-- What's the one through-line? -- Tweet 1 \u2014 Hook <!-- The post...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "SF Template \u2014 Short-Form\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: LinkedIn | Twitter | Both\nCreated: {{date}}\nPublished: \n\n---\n\nHook\n\n<!-- First sentence IS the post. Claim or stake. No warm-up. -->\n\n\nBody\n\n<!-- 3-5 lines. One idea. White space. -->\n\n\nCloser\n\n<!--...",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     },
     {
-      "filename": "Drafts/Thread/_TEMPLATE_Thread.md",
-      "name": "_TEMPLATE_Thread.md",
-      "path": "Drafts/Thread/_TEMPLATE_Thread.md",
-      "date": null,
+      "filename": "_TEMPLATE_Bridge.md",
+      "rel_path": "Drafts/Bridge/_TEMPLATE_Bridge.md",
+      "stage": "Draft",
+      "stage_label": "Drafts",
+      "title": "Bridge Template \u2014 Short \u2192 Long",
+      "preview": "Status: Draft Polished Published Pillar: Source Ideas: Links to: Created: {{date}} Published: --- Short-Form Teaser <!-- Must work as a standalone insight. The link to long-form is a bonus, not the po...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "Thread Template\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: Twitter | LinkedIn Carousel\nCreated: {{date}}\nPublished: \n\n---\n\nThread Core\n<!-- What's the one through-line? -->\n\nTweet 1 \u2014 Hook\n<!-- The post everyone sees. Must work standalone. -->\n\n---\n\nTweet 2 \u2014 Build\n<!--...",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     },
     {
-      "filename": "Drafts/Visual/_TEMPLATE_Visual.md",
-      "name": "_TEMPLATE_Visual.md",
-      "path": "Drafts/Visual/_TEMPLATE_Visual.md",
-      "date": null,
+      "filename": "_TEMPLATE_Visual.md",
+      "rel_path": "Drafts/Visual/_TEMPLATE_Visual.md",
+      "stage": "Draft",
+      "stage_label": "Drafts",
+      "title": "Visual Template \u2014 Carousel / Diagram / Infographic",
+      "preview": "Status: Draft Polished Published Pillar: Source Ideas: Channel: LinkedIn Instagram (future) Twitter Created: {{date}} Published: --- Concept <!-- What's the framework, diagram, or information being vi...",
+      "source": "",
+      "date": "",
       "tags": [],
-      "suggested_angle": null,
-      "rating": null,
-      "source": null,
-      "body_preview": "Visual Template \u2014 Carousel / Diagram / Infographic\n\nStatus: Draft | Polished | Published\nPillar: \nSource Ideas: \nChannel: LinkedIn | Instagram (future) | Twitter\nCreated: {{date}}\nPublished: \n\n---\n\nConcept\n<!-- What's the framework, diagram, or information being visualized? -->\n\nSlide...",
+      "suggested_angle": "",
+      "rating": "",
+      "challenge_date": "",
+      "gauntlet_score": "",
+      "content_type": "",
       "is_template": true
     }
   ],
-  "totalItems": 55,
-  "totalTemplates": 6,
-  "summary": [
-    {
-      "id": "inbox",
-      "label": "CAPTURE",
-      "color": "#58a6ff",
-      "count": 48
-    },
-    {
-      "id": "incubating",
-      "label": "INCUBATING",
-      "color": "#d2a8ff",
-      "count": 0
-    },
-    {
-      "id": "challenged",
-      "label": "CHALLENGED",
-      "color": "#f778ba",
-      "count": 0
-    },
-    {
-      "id": "queue",
-      "label": "QUEUE",
-      "color": "#d29922",
-      "count": 7
-    },
-    {
-      "id": "drafts",
-      "label": "DRAFTS",
-      "color": "#3fb950",
-      "count": 0
-    },
-    {
-      "id": "polished",
-      "label": "POLISHED",
-      "color": "#39d2c0",
-      "count": 0
-    },
-    {
-      "id": "archive",
-      "label": "ARCHIVE",
-      "color": "#8b949e",
-      "count": 0
-    }
-  ],
-  "generatedAt": "2026-07-27T13:18:29Z"
+  "generated": "2026-07-27",
+  "total_files": 60,
+  "total_templates": 6
 };
 
-const TAG_COLORS = {
-  "idea": "background:#2d1b4e;color:#d2a8ff",
-  "ai-deployment": "background:#1a3a5c;color:#79c0ff",
-  "applied-ai": "background:#1a3a5c;color:#79c0ff",
-  "governance": "background:#3d1a1a;color:#ff7b72",
-  "retail-ai": "background:#1a3d2d;color:#7ee787",
-  "diamond": "background:#1a2d3d;color:#79c0ff",
-  "insight": "background:#1a2d3d;color:#79c0ff",
-  "case-study": "background:#1a3d3d;color:#56d4dd",
-  "hot-take": "background:#3d1a2d;color:#f778ba",
-  "framework": "background:#1a3d2d;color:#7ee787",
-  "observation": "background:#2d2d1a;color:#d29922",
-  "contrarian": "background:#3d1a2d;color:#f778ba",
-  "market-shift": "background:#3d2d1a;color:#d29922",
-  "regulation": "background:#2d1a3d;color:#bc8cff",
-  "infrastructure": "background:#1a2d3d;color:#79c0ff",
-  "capture": "background:#1a3a2a;color:#7ee787"
-};
+function init() {
+  document.getElementById('gen-date').textContent = DATA.generated;
 
-function tagStyle(tag) {
-  const color = TAG_COLORS[tag];
-  if (color) return color;
-  return 'background:var(--accent2);color:var(--text)';
-}
+  // Summary bar
+  const sb = document.getElementById('summary-bar');
+  let total = 0;
+  for (const [k,v] of Object.entries(DATA.stages)) {
+    total += v.count;
+  }
+  const stageColors = {
+    Capture:'#58a6ff', Incubate:'#3fb950', Challenge:'#d29922',
+    Organize:'#bc8cff', Draft:'#f778ba', Polish:'#39d2c0', Archive:'#8b949e'
+  };
+  let html = `<span class="sum-item"><span class="dot" style="background:#8b949e"></span>${total} total files</span>`;
+  for (const [k,v] of Object.entries(DATA.stages)) {
+    html += `<span class="sum-item"><span class="dot" style="background:${stageColors[k]||'#8b949e'}"></span>${v.label} (${v.count})</span>`;
+  }
+  html += `<span class="sum-item">✦ ${DATA.templates.length} templates</span>`;
+  sb.innerHTML = html;
 
-function render() {
-  const app = document.getElementById('app');
-  let html = '';
-
-  // Header
-  html += '<div class="header">';
-  html += '<h1>The Foundry <span>Pipeline Dashboard</span></h1>';
-  html += '<div class="sub">' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) + ' — ' + DATA.totalItems + ' total items across pipeline</div>';
-
-  // Pipeline Summary
-  html += '<div class="summary-bar">';
-  DATA.summary.forEach(function(s) {
-    html += '<span class="sum-item"><span class="dot" style="background:' + s.color + '"></span>' + s.label + ': ' + s.count + '</span>';
-  });
-  html += '</div></div>';
-
-  // Pipeline Flow
-  html += '<div class="pipeline-flow">';
-  DATA.stages.forEach(function(stage, i) {
-    if (i > 0) {
-      html += '<span class="pipeline-arrow">&#9654;</span>';
+  // Pipeline flow
+  const pf = document.getElementById('pipeline-flow');
+  const stageOrder = ['Capture','Incubate','Challenge','Organize','Draft','Polish','Archive'];
+  const stageLabels = {Capture:'Inbox',Incubate:'Incubating',Challenge:'Challenged',Organize:'Queue',Draft:'Drafts',Polish:'Polished',Archive:'Cold Storage'};
+  const stageIcons = {Capture:'📥',Incubate:'🔄',Challenge:'⚔️',Organize:'📋',Draft:'✍️',Polish:'✨',Archive:'🗄️'};
+  
+  // Determine bottleneck: empty mid-pipeline stages (Capture→Incubate→Challenge→Organize→Draft→Polish)
+  const midStages = ['Incubate','Challenge','Organize','Draft','Polish'];
+  const bottleneckStages = midStages.filter(s => DATA.stages[s].count === 0);
+  
+  let flowHtml = '';
+  stageOrder.forEach((s, i) => {
+    const st = DATA.stages[s];
+    const isBottleneck = bottleneckStages.includes(s);
+    const isActive = st.count > 0;
+    const cls = 'stage-card' + (isBottleneck ? ' bottleneck' : '') + (isActive ? ' active' : '');
+    flowHtml += `<div class="${cls}" data-stage="${s}" onclick="togglePanel('${s}')">
+      <div class="stage-label">${stageIcons[s]} ${st.label}</div>
+      <div class="stage-name">${s}</div>
+      <div class="stage-count ${st.count===0?'empty':''}">${st.count}</div>
+    </div>`;
+    if (i < stageOrder.length - 1) {
+      flowHtml += '<div class="pipeline-arrow">›</div>';
     }
-    var bottleneck = stage.bottleneck ? ' bottleneck' : '';
-    var emptyClass = stage.count === 0 ? ' empty' : '';
-    html += '<div class="stage-card' + bottleneck + '" data-stage="' + stage.id + '" onclick="togglePanel(\'' + stage.id + '\')">';
-    html += '<div class="stage-label">' + stage.icon + ' ' + stage.name + '</div>';
-    html += '<div class="stage-name">(' + stage.dir + ')</div>';
-    html += '<div class="stage-count' + emptyClass + '">' + stage.count + '</div>';
-    html += '</div>';
   });
-  html += '</div>';
+  pf.innerHTML = flowHtml;
 
-  // Detail Panels
-  html += '<div class="detail-panels">';
-  DATA.stages.forEach(function(stage) {
-    html += '<div class="detail-panel" id="panel-' + stage.id + '">';
-    html += '<div class="detail-panel-header" onclick="togglePanel(\'' + stage.id + '\')">';
-    html += '<div><div class="dp-label">' + (stage.bottleneck ? '⚠️ BOTTLENECK' : stage.icon + ' ' + stage.name) + '</div><div class="dp-title">' + stage.name + ' — ' + stage.dir + '</div></div>';
-    html += '<div style="display:flex;align-items:center;gap:8px"><span class="dp-count">' + stage.count + ' items</span><span class="dp-toggle" id="toggle-' + stage.id + '">&#9660;</span></div>';
-    html += '</div>';
-    html += '<div class="detail-panel-body" id="body-' + stage.id + '">';
-
-    if (stage.files.length === 0) {
-      html += '<div class="empty-state">No items</div>';
-    } else {
-      html += '<div class="file-list">';
-      stage.files.forEach(function(file, fi) {
-        var fileId = stage.id + '-file-' + fi;
-        html += '<div class="file-card">';
-        html += '<div class="file-card-summary" onclick="toggleFile(\'' + fileId + '\')">';
-        html += '<div class="fc-top">';
-        html += '<span class="fc-filename">' + escapeHtml(file.filename) + '</span>';
-        if (file.date) {
-          html += '<span class="fc-date">' + file.date + '</span>';
-        }
-        html += '</div>';
-
-        // Tags
-        if (file.tags && file.tags.length > 0) {
-          html += '<div class="fc-tags">';
-          file.tags.forEach(function(tag) {
-            html += '<span class="fc-tag" style="' + tagStyle(tag) + '">#' + tag + '</span>';
-          });
-          html += '</div>';
-        }
-
-        // Rating
-        if (file.rating !== null && file.rating !== undefined) {
-          html += '<div><span class="fc-rating">' + file.rating + '/5</span></div>';
-        }
-
-        // Suggested angle (truncated)
-        if (file.suggested_angle) {
-          var angle = file.suggested_angle.length > 120 ? file.suggested_angle.substring(0, 120) + '...' : file.suggested_angle;
-          html += '<div class="fc-angle">"' + escapeHtml(angle) + '"</div>';
-        }
-
-        html += '</div>'; // summary
-
-        // Expanded body
-        html += '<div class="file-card-body" id="' + fileId + '">';
-        if (file.source) {
-          html += '<div class="fcb-label">Source</div>';
-          html += '<div class="fcb-source"><a href="' + escapeHtml(file.source) + '" target="_blank" rel="noopener">' + escapeHtml(file.source) + '</a></div>';
-        }
-        if (file.suggested_angle) {
-          html += '<div class="fcb-label">Suggested Angle</div>';
-          html += '<div class="fcb-angle-full">' + escapeHtml(file.suggested_angle) + '</div>';
-        }
-        if (file.body_preview) {
-          html += '<div class="fcb-label">Body Preview</div>';
-          html += '<div class="fcb-body-preview">' + escapeHtml(file.body_preview) + '</div>';
-        }
-        html += '</div>'; // body
-
-        html += '</div>'; // file-card
-      });
-      html += '</div>';
-    }
-
-    html += '</div>'; // body
-    html += '</div>'; // panel
+  // Detail panels
+  const dp = document.getElementById('detail-panels');
+  let panelsHtml = '';
+  stageOrder.forEach(s => {
+    const st = DATA.stages[s];
+    const label = stageLabels[s];
+    panelsHtml += `<div class="detail-panel" id="panel-${s}">
+      <div class="detail-panel-header" onclick="togglePanel('${s}')">
+        <div>
+          <div class="dp-label">${stageIcons[s]} ${label}</div>
+          <div class="dp-title">${s} Stage</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="dp-count">${st.count} file${st.count!==1?'s':''}</div>
+          <div class="dp-toggle" id="toggle-${s}">▼</div>
+        </div>
+      </div>
+      <div class="detail-panel-body" id="body-${s}">
+        ${st.count === 0 ? '<div class="empty-state">No files in this stage</div>' : buildFileList(st.files)}
+      </div>
+    </div>`;
   });
-  html += '</div>';
+  dp.innerHTML = panelsHtml;
 
   // Templates section
   if (DATA.templates.length > 0) {
-    html += '<div class="templates-section">';
-    html += '<h3>Templates (' + DATA.templates.length + ')</h3>';
-    html += '<div class="templates-list">';
-    DATA.templates.forEach(function(tpl) {
-      var displayName = tpl.filename;
-      html += '<a class="template-link" href="' + escapeHtml(tpl.filename) + '"><span class="tl-abbr">TMPL</span> ' + escapeHtml(displayName) + '</a>';
+    const ts = document.getElementById('templates-section');
+    let tHtml = '<h2>Templates <span>— ' + DATA.templates.length + ' vault templates</span></h2><div class="templates-grid">';
+    DATA.templates.forEach(t => {
+      const label = t.stage_label || t.rel_path.split('/')[0] || 'Vault';
+      tHtml += `<a href="${t.rel_path}" class="template-card" target="_blank">
+        <div class="tpl-label">📄 ${label}</div>
+        <div class="tpl-name">${t.title || t.filename}</div>
+      </a>`;
     });
-    html += '</div></div>';
-  }
-
-  // Footer
-  html += '<div class="footer">The Foundry — Content Pipeline Dashboard — Generated from vault scan on ' + new Date().toISOString().split('T')[0] + '</div>';
-
-  app.innerHTML = html;
-}
-
-function escapeHtml(s) {
-  if (!s) return '';
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-}
-
-function togglePanel(id) {
-  var body = document.getElementById('body-' + id);
-  var toggle = document.getElementById('toggle-' + id);
-  if (!body) return;
-  var isOpen = body.classList.contains('open');
-  body.classList.toggle('open');
-  toggle.classList.toggle('open');
-  if (!isOpen) {
-    setTimeout(function() {
-      body.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 50);
+    tHtml += '</div>';
+    ts.innerHTML = tHtml;
   }
 }
 
-function toggleFile(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.classList.toggle('open');
+function buildFileList(files) {
+  let html = '<div class="file-list">';
+  files.forEach((f, idx) => {
+    const tags = (f.tags || []).map(t => {
+      const clean = String(t).replace(/^#/,'');
+      return `<span class="tag tag-${clean}">#${clean}</span>`;
+    }).join(' ');
+    const rating = f.rating ? `<span class="fc-rating">★ ${f.rating}</span>` : '';
+    const dateStr = f.date || '';
+    const angleSnippet = f.suggested_angle ? f.suggested_angle.slice(0,80) + (f.suggested_angle.length > 80 ? '...' : '') : '';
+    html += `<div class="file-card">
+      <div class="file-card-summary" onclick="toggleDetail('${idx}')">
+        <div class="fc-top">
+          <span class="fc-filename">📄 ${f.filename}</span>
+        </div>
+        <div class="fc-meta">
+          ${dateStr ? `<span class="fc-date">📅 ${dateStr}</span>` : ''}
+          ${rating}
+          ${tags}
+          ${angleSnippet ? `<span style="color:var(--text2);font-style:italic">"${angleSnippet}"</span>` : ''}
+        </div>
+      </div>
+      <div class="file-card-detail" id="detail-${idx}">
+        ${f.source ? `<div class="detail-label">Source</div><div class="detail-value"><a href="${f.source}" target="_blank">${f.source}</a></div>` : ''}
+        ${f.suggested_angle ? `<div class="detail-label">Suggested Angle</div><div class="detail-value">${f.suggested_angle}</div>` : ''}
+        ${f.challenge_date ? `<div class="detail-label">Challenge Date</div><div class="detail-value">${f.challenge_date}</div>` : ''}
+        ${f.gauntlet_score ? `<div class="detail-label">Gauntlet Score</div><div class="detail-value">${f.gauntlet_score}</div>` : ''}
+        ${f.content_type ? `<div class="detail-label">Content Type</div><div class="detail-value">${f.content_type}</div>` : ''}
+        ${f.preview ? `<div class="detail-label">Body Preview</div><div class="detail-value">${f.preview}</div>` : ''}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
 }
 
-render();
+// Track which panels are open
+const openPanels = new Set();
+const openDetails = new Set();
+
+function togglePanel(stage) {
+  const body = document.getElementById('body-' + stage);
+  const toggle = document.getElementById('toggle-' + stage);
+  if (openPanels.has(stage)) {
+    openPanels.delete(stage);
+    body.classList.remove('open');
+    toggle.classList.remove('open');
+  } else {
+    openPanels.add(stage);
+    body.classList.add('open');
+    toggle.classList.add('open');
+  }
+}
+
+function toggleDetail(idx) {
+  const el = document.getElementById('detail-' + idx);
+  if (openDetails.has(idx)) {
+    openDetails.delete(idx);
+    el.classList.remove('open');
+  } else {
+    openDetails.add(idx);
+    el.classList.add('open');
+  }
+}
+
+init();
 </script>
 </body>
 </html>
