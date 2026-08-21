@@ -13,9 +13,10 @@ header h1 { font-size: 1.75rem; font-weight: 600; color: #f0f6fc; letter-spacing
 header .subtitle { color: #8b949e; font-size: 0.9rem; margin-top: 4px; }
 header .file-count { color: #58a6ff; font-weight: 500; }
 .pipeline-flow { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
-.stage-card { flex: 1; min-width: 140px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; position: relative; }
+.stage-card { flex: 1; min-width: 140px; background: #161b22; color: inherit; font: inherit; text-align: left; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; position: relative; }
 .stage-card:hover { border-color: #58a6ff; background: #1c2128; }
 .stage-card.active { border-color: #58a6ff; background: #1c2128; }
+.stage-card:focus-visible, .file-header:focus-visible, .search-input:focus-visible, .filter-select:focus-visible { outline: 2px solid #58a6ff; outline-offset: 2px; }
 .stage-card .stage-name { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #8b949e; }
 .stage-card .stage-count { font-size: 1.6rem; font-weight: 700; margin: 4px 0; }
 .stage-card .arrow { color: #30363d; font-size: 1.2rem; margin-top: 8px; }
@@ -25,7 +26,7 @@ header .file-count { color: #58a6ff; font-weight: 500; }
 .stage-detail.visible { display: block; }
 .stage-detail h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: #f0f6fc; }
 .file-card { background: #161b22; border: 1px solid #30363d; border-radius: 6px; margin-bottom: 6px; overflow: hidden; }
-.file-header { padding: 10px 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; transition: background 0.15s; }
+.file-header { width: 100%; padding: 10px 14px; color: inherit; font: inherit; text-align: left; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; transition: background 0.15s; }
 .file-header:hover { background: #1c2128; }
 .file-header .filename { font-weight: 500; color: #58a6ff; font-size: 0.85rem; }
 .file-header .date { color: #8b949e; font-size: 0.78rem; white-space: nowrap; }
@@ -59,6 +60,12 @@ header .file-count { color: #58a6ff; font-weight: 500; }
 .template-link { padding: 6px 12px; background: #161b22; border: 1px solid #30363d; border-radius: 6px; color: #8b949e; text-decoration: none; font-size: 0.82rem; transition: all 0.15s; }
 .template-link:hover { border-color: #58a6ff; color: #58a6ff; }
 .empty-state { color: #8b949e; font-size: 0.85rem; font-style: italic; padding: 10px 0; }
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.search-input, .filter-select { min-height: 40px; border: 1px solid #30363d; border-radius: 6px; background: #161b22; color: #f0f6fc; font: inherit; }
+.search-input { flex: 1; min-width: 240px; padding: 8px 12px; }
+.filter-select { padding: 8px 34px 8px 10px; }
+.result-count { color: #8b949e; font-size: 0.8rem; margin-left: auto; }
+.file-card[hidden] { display: none; }
 .pipeline-arrow { display: flex; align-items: center; color: #30363d; font-size: 1.2rem; padding: 0 2px; }
 @media (max-width: 768px) { .stage-card { min-width: 100px; } .file-header { flex-direction: column; align-items: flex-start; } }
 </style>
@@ -71,6 +78,14 @@ header .file-count { color: #58a6ff; font-weight: 500; }
   </header>
 
   <div id="pipeline-flow" class="pipeline-flow"></div>
+
+  <div class="toolbar" role="search" aria-label="Filter content files">
+    <input id="content-search" class="search-input" type="search" placeholder="Search titles, filenames, tags, pillars, and previews…" aria-label="Search content files">
+    <select id="type-filter" class="filter-select" aria-label="Filter by content type">
+      <option value="">All content types</option>
+    </select>
+    <span id="result-count" class="result-count" aria-live="polite"></span>
+  </div>
 
   <div id="stage-details"></div>
 
@@ -6938,14 +6953,47 @@ var DATA = {
   document.getElementById('stage-count-display').textContent = d.stages.length;
   document.getElementById('template-count').textContent = d.templates_count;
 
+  var searchInput = document.getElementById('content-search');
+  var typeFilter = document.getElementById('type-filter');
+  var resultCount = document.getElementById('result-count');
+  var contentTypes = {};
+  d.stages.forEach(function(stage) {
+    stage.files.forEach(function(file) {
+      if (file.content_type) contentTypes[file.content_type] = true;
+    });
+  });
+  Object.keys(contentTypes).sort().forEach(function(type) {
+    var option = document.createElement('option');
+    option.value = type.toLowerCase();
+    option.textContent = type;
+    typeFilter.appendChild(option);
+  });
+
   // Render pipeline flow
   var flow = document.getElementById('pipeline-flow');
   d.stages.forEach(function(stage, idx) {
-    var card = document.createElement('div');
+    var card = document.createElement('button');
+    card.type = 'button';
     card.className = 'stage-card' + (stage.is_bottleneck ? ' bottleneck' : '');
     card.dataset.stage = stage.id;
-    card.innerHTML = '<div class="stage-name">' + stage.name + '</div><div class="stage-count">' + stage.count + '</div>';
-    card.addEventListener('click', function() { toggleStage(stage.id); });
+    card.setAttribute('aria-expanded', 'false');
+    card.setAttribute('aria-controls', 'detail-' + stage.id);
+    var stageName = document.createElement('div');
+    stageName.className = 'stage-name';
+    stageName.textContent = stage.name;
+    var stageCount = document.createElement('div');
+    stageCount.className = 'stage-count';
+    stageCount.textContent = stage.count;
+    card.appendChild(stageName);
+    card.appendChild(stageCount);
+    card.addEventListener('click', function() {
+      if (searchInput.value || typeFilter.value) {
+        searchInput.value = '';
+        typeFilter.value = '';
+        applyFilters();
+      }
+      toggleStage(stage.id);
+    });
     flow.appendChild(card);
     if (idx < d.stages.length - 1) {
       var arrow = document.createElement('div');
@@ -6976,9 +7024,14 @@ var DATA = {
         var card = document.createElement('div');
         card.className = 'file-card';
         
-        var header = document.createElement('div');
+        var header = document.createElement('button');
+        header.type = 'button';
         header.className = 'file-header';
-        header.addEventListener('click', function() { toggleFileBody(card); });
+        header.setAttribute('aria-expanded', 'false');
+        header.addEventListener('click', function() { toggleFileBody(card, header); });
+
+        card.dataset.search = [file.filename, file.heading, file.preview, file.pillar, file.content_type, (file.tags || []).join(' ')].join(' ').toLowerCase();
+        card.dataset.contentType = (file.content_type || '').toLowerCase();
         
         var fn = document.createElement('span');
         fn.className = 'filename';
@@ -7042,42 +7095,42 @@ var DATA = {
         if (file.source) {
           var sf = document.createElement('div');
           sf.className = 'field';
-          sf.innerHTML = '<div class="field-label">Source</div><div class="field-value">' + (file.source.indexOf('http') === 0 ? '<a href="' + file.source + '" target="_blank">' + file.source + '</a>' : file.source) + '</div>';
+          appendField(sf, 'Source', file.source, file.source.indexOf('http') === 0 ? file.source : '');
           body.appendChild(sf);
         }
         
         if (file.suggested_angle) {
           var sa = document.createElement('div');
           sa.className = 'field';
-          sa.innerHTML = '<div class="field-label">Suggested Angle</div><div class="field-value">' + file.suggested_angle + '</div>';
+          appendField(sa, 'Suggested Angle', file.suggested_angle);
           body.appendChild(sa);
         }
         
         if (file.challenge_date) {
           var cd = document.createElement('div');
           cd.className = 'field';
-          cd.innerHTML = '<div class="field-label">Challenge Date</div><div class="field-value">' + file.challenge_date + '</div>';
+          appendField(cd, 'Challenge Date', file.challenge_date);
           body.appendChild(cd);
         }
         
         if (file.gate_check) {
           var gc = document.createElement('div');
           gc.className = 'field';
-          gc.innerHTML = '<div class="field-label">Gate Check</div><div class="field-value">' + file.gate_check + (file.gate_check_reason ? '<br><span style="color:#8b949e;font-size:0.78rem;">' + file.gate_check_reason + '</span>' : '') + '</div>';
+          appendField(gc, 'Gate Check', file.gate_check, '', file.gate_check_reason);
           body.appendChild(gc);
         }
         
         if (file.format) {
           var fmt = document.createElement('div');
           fmt.className = 'field';
-          fmt.innerHTML = '<div class="field-label">Format</div><div class="field-value">' + file.format + '</div>';
+          appendField(fmt, 'Format', file.format);
           body.appendChild(fmt);
         }
         
         if (file.pillar) {
           var pl = document.createElement('div');
           pl.className = 'field';
-          pl.innerHTML = '<div class="field-label">Pillar</div><div class="field-value">' + file.pillar + '</div>';
+          appendField(pl, 'Pillar', file.pillar);
           body.appendChild(pl);
         }
         
@@ -7085,7 +7138,10 @@ var DATA = {
           var pr = document.createElement('div');
           pr.className = 'field';
           var headingText = file.heading ? file.heading : '';
-          pr.innerHTML = '<div class="field-label">Preview' + (headingText ? ' — ' + headingText : '') + '</div>';
+          var previewLabel = document.createElement('div');
+          previewLabel.className = 'field-label';
+          previewLabel.textContent = 'Preview' + (headingText ? ' — ' + headingText : '');
+          pr.appendChild(previewLabel);
           var pv = document.createElement('div');
           pv.className = 'preview-text';
           pv.textContent = file.preview.replace(/<[^>]*>/g, '');
@@ -7116,6 +7172,72 @@ var DATA = {
     tg.innerHTML = '<div class="empty-state">No templates found.</div>';
   }
 
+  function appendField(container, label, value, href, secondary) {
+    var labelEl = document.createElement('div');
+    labelEl.className = 'field-label';
+    labelEl.textContent = label;
+    var valueEl = document.createElement('div');
+    valueEl.className = 'field-value';
+    if (href) {
+      var link = document.createElement('a');
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = value;
+      valueEl.appendChild(link);
+    } else {
+      valueEl.textContent = value;
+    }
+    if (secondary) {
+      var note = document.createElement('div');
+      note.style.cssText = 'color:#8b949e;font-size:0.78rem;';
+      note.textContent = secondary;
+      valueEl.appendChild(note);
+    }
+    container.appendChild(labelEl);
+    container.appendChild(valueEl);
+  }
+
+  function applyFilters() {
+    var query = searchInput.value.trim().toLowerCase();
+    var selectedType = typeFilter.value;
+    var isFiltering = Boolean(query || selectedType);
+    var visible = 0;
+    document.querySelectorAll('.stage-detail').forEach(function(panel) {
+      var panelMatches = 0;
+      panel.querySelectorAll('.file-card').forEach(function(card) {
+        var matchesSearch = !query || card.dataset.search.indexOf(query) >= 0;
+        var matchesType = !selectedType || card.dataset.contentType === selectedType;
+        card.hidden = !(matchesSearch && matchesType);
+        if (!card.hidden) {
+          visible += 1;
+          panelMatches += 1;
+        }
+      });
+      if (isFiltering) panel.classList.toggle('visible', panelMatches > 0);
+    });
+    if (isFiltering) {
+      document.querySelectorAll('.stage-card').forEach(function(card) {
+        card.classList.remove('active');
+        card.setAttribute('aria-expanded', document.getElementById('detail-' + card.dataset.stage).classList.contains('visible') ? 'true' : 'false');
+      });
+    } else {
+      document.querySelectorAll('.stage-detail').forEach(function(panel) {
+        panel.classList.toggle('visible', panel.id === 'detail-' + activeStage);
+      });
+      document.querySelectorAll('.stage-card').forEach(function(card) {
+        var isActive = card.dataset.stage === activeStage;
+        card.classList.toggle('active', isActive);
+        card.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      });
+    }
+    resultCount.textContent = visible + ' of ' + d.total_files + ' files';
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  typeFilter.addEventListener('change', applyFilters);
+  applyFilters();
+
   // Helper functions
   var activeStage = null;
   function toggleStage(id) {
@@ -7125,6 +7247,7 @@ var DATA = {
       activeStage = null;
       panels.forEach(function(p) { p.classList.remove('visible'); });
       cards.forEach(function(c) { c.classList.remove('active'); });
+      cards.forEach(function(c) { c.setAttribute('aria-expanded', 'false'); });
     } else {
       activeStage = id;
       panels.forEach(function(p) { 
@@ -7133,14 +7256,21 @@ var DATA = {
       });
       cards.forEach(function(c) {
         c.classList.remove('active');
-        if (c.dataset.stage === id) c.classList.add('active');
+        c.setAttribute('aria-expanded', 'false');
+        if (c.dataset.stage === id) {
+          c.classList.add('active');
+          c.setAttribute('aria-expanded', 'true');
+        }
       });
     }
   }
 
-  function toggleFileBody(card) {
+  function toggleFileBody(card, header) {
     var body = card.querySelector('.file-body');
-    if (body) body.classList.toggle('open');
+    if (body) {
+      body.classList.toggle('open');
+      header.setAttribute('aria-expanded', body.classList.contains('open') ? 'true' : 'false');
+    }
   }
 
   // Auto-open first non-empty stage
